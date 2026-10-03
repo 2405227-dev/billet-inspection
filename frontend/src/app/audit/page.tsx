@@ -8,18 +8,17 @@ import {
   getApiUrl,
 } from "@/lib/api";
 import { AuditVerifyResult, InspectionSummary } from "@/lib/types";
-import { GlowCard } from "@/components/ui/GlowCard";
+import { StatusBadge } from "@/components/common/StatusBadge";
 import {
   ShieldCheck,
   ShieldAlert,
   FileSpreadsheet,
   FileText,
   Download,
-  RefreshCw,
-  Lock,
-  CheckCircle2,
-  Flame,
   Key,
+  Flame,
+  Copy,
+  Check,
 } from "lucide-react";
 
 export default function AuditCenterPage() {
@@ -27,6 +26,7 @@ export default function AuditCenterPage() {
   const [isVerifying, setIsVerifying] = useState<boolean>(false);
   const [inspections, setInspections] = useState<InspectionSummary[]>([]);
   const [tamperMessage, setTamperMessage] = useState<string | null>(null);
+  const [copiedHash, setCopiedHash] = useState<string | null>(null);
 
   const handleVerify = async () => {
     setIsVerifying(true);
@@ -52,234 +52,140 @@ export default function AuditCenterPage() {
     }
   };
 
+  const handleCopy = (hash: string) => {
+    navigator.clipboard.writeText(hash);
+    setCopiedHash(hash);
+    setTimeout(() => setCopiedHash(null), 2000);
+  };
+
   useEffect(() => {
     handleVerify();
-    fetchInspections({ limit: 10 }).then(setInspections);
+    fetchInspections({ limit: 12 }).then(setInspections);
   }, []);
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-6 max-w-5xl mx-auto">
       {/* Header */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-white/10 pb-5">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-white/[0.08] pb-4">
         <div>
-          <h1 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight flex items-center gap-2.5">
-            <ShieldCheck className="w-6 h-6 text-[#ED1C27]" />
-            <span>Cryptographic Audit & Compliance Center</span>
+          <div className="flex items-center gap-2 font-mono text-[11px] text-slate-400 uppercase tracking-wider mb-1">
+            <span>AUDIT LOG</span>
+            <span>·</span>
+            <span className="text-[#ED1C27] font-semibold">CRYPTOGRAPHIC IMMUTABILITY</span>
+          </div>
+          <h1 className="text-xl sm:text-2xl font-bold text-white tracking-tight">
+            Traceability & Audit Center
           </h1>
-          <p className="text-xs text-white/50 mt-1">
-            Append-Only SHA-256 Hash Chaining • Mathematical Immutability • Anti-Tampering Verification
+          <p className="text-xs text-slate-400 mt-0.5">
+            Append-Only SHA-256 Hash Chaining · Mathematical Immutability · Anti-Tampering Verification
           </p>
         </div>
 
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2.5 font-mono text-xs">
           <button
             onClick={handleVerify}
             disabled={isVerifying}
-            className="flex items-center gap-2 px-5 py-2.5 rounded-full bg-[#ED1C27] hover:bg-[#ff2a37] text-white text-xs font-bold shadow-[0_0_20px_rgba(237,28,39,0.4)] disabled:opacity-50 font-mono transition-all"
+            className="flex items-center gap-1.5 px-4 py-2 rounded-lg bg-[#ED1C27] hover:bg-[#ff2a37] text-white font-bold transition-colors disabled:opacity-50"
           >
-            <Key className="w-4 h-4" />
-            <span>{isVerifying ? "Verifying Chain..." : "Verify Audit Chain"}</span>
+            <Key className="w-3.5 h-3.5" />
+            <span>{isVerifying ? "VERIFYING..." : "VERIFY AUDIT CHAIN"}</span>
           </button>
 
           <button
             onClick={handleTamperTest}
-            className="flex items-center gap-1.5 px-4 py-2.5 rounded-full bg-white/5 hover:bg-rose-950 text-white/70 hover:text-rose-300 border border-white/10 hover:border-rose-500/40 text-xs font-semibold font-mono transition-all"
+            className="flex items-center gap-1.5 px-3 py-2 rounded-lg bg-white/[0.04] hover:bg-rose-950/40 text-slate-300 hover:text-rose-300 border border-white/10 hover:border-rose-500/30 transition-colors"
             title="Demonstrate Tamper Detection"
           >
-            <Flame className="w-3.5 h-3.5 text-[#ED1C27]" />
-            <span>Simulate DB Tamper</span>
+            <Flame className="w-3.5 h-3.5 text-rose-400" />
+            <span>SIMULATE TAMPER</span>
           </button>
         </div>
       </div>
 
-      {/* Verification Status Callout Card */}
-      {verifyResult && (
-        <div
-          className={`border rounded-2xl p-6 shadow-2xl space-y-4 backdrop-blur-xl ${
-            verifyResult.is_valid
-              ? "bg-[#07130c]/90 border-emerald-500/40 shadow-[0_0_30px_rgba(16,185,129,0.15)]"
-              : "bg-[#18090b]/90 border-[#ED1C27]/50 shadow-[0_0_30px_rgba(237,28,39,0.25)]"
-          }`}
-        >
-          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-            <div className="flex items-center gap-3.5">
-              {verifyResult.is_valid ? (
-                <div className="p-3 bg-emerald-500/20 rounded-2xl text-emerald-400 border border-emerald-500/40">
-                  <CheckCircle2 className="w-8 h-8" />
-                </div>
-              ) : (
-                <div className="p-3 bg-[#ED1C27]/20 rounded-2xl text-[#ED1C27] border border-[#ED1C27]/40">
-                  <ShieldAlert className="w-8 h-8 animate-pulse" />
-                </div>
-              )}
-              <div>
-                <h2
-                  className={`text-lg font-black tracking-wider uppercase font-mono ${
-                    verifyResult.is_valid ? "text-emerald-300" : "text-[#ED1C27]"
-                  }`}
-                >
-                  {verifyResult.is_valid ? "✓ AUDIT CHAIN VALID & VERIFIED" : "⚠ AUDIT INTEGRITY FAILURE"}
-                </h2>
-                <div className="text-xs text-white/70 font-mono mt-1">
-                  {verifyResult.message}
-                </div>
-              </div>
-            </div>
-
-            <div className="text-right font-mono text-xs text-white/50">
-              <div>VERIFIED RECORDS: <span className="text-white font-bold">{verifyResult.total_records}</span></div>
-              <div>VERIFIED AT: <span className="text-white/70">{new Date(verifyResult.verified_at).toLocaleTimeString()}</span></div>
-            </div>
-          </div>
-
-          {tamperMessage && (
-            <div className="p-3.5 bg-black/80 rounded-xl border border-white/10 text-xs font-mono text-amber-300">
-              Demo Test Action: {tamperMessage}
-            </div>
-          )}
-        </div>
-      )}
-
-      {/* Export & Audit Reports Hub */}
-      <div className="bg-[#0a0a0a] border border-white/10 rounded-2xl p-6 shadow-2xl space-y-5 backdrop-blur-xl">
-        <div className="flex items-center justify-between border-b border-white/10 pb-3">
-          <div className="flex items-center gap-2">
-            <Download className="w-4 h-4 text-[#ED1C27]" />
-            <h3 className="font-bold text-xs text-white uppercase tracking-wider font-mono">
-              Official Quality Audit Downloads & Exports
-            </h3>
-          </div>
-          <span className="text-[10px] font-mono text-white/40">OpenPyXL & ReportLab Engine</span>
+      {/* Top 4 Summary Metrics */}
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-3 font-mono text-xs">
+        <div className="bg-[#0c0e14] border border-white/[0.08] rounded-xl p-4">
+          <span className="text-[10px] text-slate-500 block uppercase">TOTAL RECORDS</span>
+          <span className="text-xl font-bold text-white mt-1 block">
+            {verifyResult?.total_records || inspections.length}
+          </span>
+          <span className="text-[10px] text-slate-500 mt-0.5 block">100% Chained</span>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-          {/* Excel Export */}
-          <a
-            href={getApiUrl("/api/export/excel")}
-            download="billet_inspection_audit.xlsx"
-            className="p-5 bg-black/60 hover:bg-black border border-white/10 hover:border-emerald-500/50 rounded-2xl flex flex-col justify-between space-y-4 transition-all group"
-          >
-            <div className="flex items-center justify-between">
-              <FileSpreadsheet className="w-6 h-6 text-emerald-400" />
-              <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/40">
-                XLSX
-              </span>
-            </div>
-            <div>
-              <div className="font-bold text-xs text-white group-hover:text-emerald-300 transition-colors">
-                Master Audit Workbook
-              </div>
-              <div className="text-[10px] text-white/40 mt-1">
-                3-Sheet Excel (Inspection Audit, Defect Details, Summary)
-              </div>
-            </div>
-          </a>
+        <div className="bg-[#0c0e14] border border-white/[0.08] rounded-xl p-4">
+          <span className="text-[10px] text-slate-500 block uppercase">VERIFIED RECORDS</span>
+          <span className="text-xl font-bold text-emerald-400 mt-1 block">
+            {verifyResult?.is_valid ? verifyResult.total_records : 0}
+          </span>
+          <span className="text-[10px] text-slate-500 mt-0.5 block">Deterministic</span>
+        </div>
 
-          {/* Batch PDF Report */}
-          <a
-            href={getApiUrl("/api/export/pdf")}
-            target="_blank"
-            rel="noreferrer"
-            className="p-5 bg-black/60 hover:bg-black border border-white/10 hover:border-[#ED1C27]/60 rounded-2xl flex flex-col justify-between space-y-4 transition-all group"
-          >
-            <div className="flex items-center justify-between">
-              <FileText className="w-6 h-6 text-[#ED1C27]" />
-              <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-[#ED1C27]/20 text-[#ED1C27] border border-[#ED1C27]/40">
-                PDF
-              </span>
-            </div>
-            <div>
-              <div className="font-bold text-xs text-white group-hover:text-[#ED1C27] transition-colors">
-                Comprehensive Batch Report
-              </div>
-              <div className="text-[10px] text-white/40 mt-1">
-                Full printable audit report with KPI summary table
-              </div>
-            </div>
-          </a>
+        <div className="bg-[#0c0e14] border border-white/[0.08] rounded-xl p-4">
+          <span className="text-[10px] text-slate-500 block uppercase">INTEGRITY ISSUES</span>
+          <span className={`text-xl font-bold mt-1 block ${verifyResult?.is_valid ? "text-slate-200" : "text-[#ED1C27]"}`}>
+            {verifyResult?.is_valid ? "0" : "1 DETECTED"}
+          </span>
+          <span className="text-[10px] text-slate-500 mt-0.5 block">Anti-Tamper Monitor</span>
+        </div>
 
-          {/* Inspections CSV */}
-          <a
-            href={getApiUrl("/api/export/csv?export_type=inspections")}
-            download="inspection_audit.csv"
-            className="p-5 bg-black/60 hover:bg-black border border-white/10 hover:border-white/20 rounded-2xl flex flex-col justify-between space-y-4 transition-all group"
-          >
-            <div className="flex items-center justify-between">
-              <Download className="w-6 h-6 text-white/60" />
-              <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-white/10 text-white/80 border border-white/15">
-                CSV
-              </span>
-            </div>
-            <div>
-              <div className="font-bold text-xs text-white group-hover:text-white/90">
-                Inspections Raw CSV
-              </div>
-              <div className="text-[10px] text-white/40 mt-1">
-                Standard flat data for enterprise ERP / MES ingestion
-              </div>
-            </div>
-          </a>
-
-          {/* Defect Details CSV */}
-          <a
-            href={getApiUrl("/api/export/csv?export_type=defects")}
-            download="defect_details.csv"
-            className="p-5 bg-black/60 hover:bg-black border border-white/10 hover:border-white/20 rounded-2xl flex flex-col justify-between space-y-4 transition-all group"
-          >
-            <div className="flex items-center justify-between">
-              <Download className="w-6 h-6 text-white/60" />
-              <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-white/10 text-white/80 border border-white/15">
-                CSV
-              </span>
-            </div>
-            <div>
-              <div className="font-bold text-xs text-white group-hover:text-white/90">
-                Defect Breakdown CSV
-              </div>
-              <div className="text-[10px] text-white/40 mt-1">
-                Granular micro-flaw dimensions, coordinates & crops
-              </div>
-            </div>
-          </a>
+        <div className="bg-[#0c0e14] border border-white/[0.08] rounded-xl p-4">
+          <span className="text-[10px] text-slate-500 block uppercase">LAST VERIFICATION</span>
+          <span className="text-sm font-bold text-slate-200 mt-1 block truncate">
+            {verifyResult ? new Date(verifyResult.verified_at).toLocaleTimeString() : "PENDING"}
+          </span>
+          <span className="text-[10px] text-emerald-400 mt-0.5 block">SHA-256 Validated</span>
         </div>
       </div>
 
-      {/* SHA-256 Hash Chaining Visualizer */}
-      <div className="bg-[#0a0a0a] border border-white/10 rounded-2xl p-6 shadow-2xl space-y-4 backdrop-blur-xl">
-        <div className="flex items-center justify-between border-b border-white/10 pb-3">
-          <div className="flex items-center gap-2">
-            <Lock className="w-4 h-4 text-[#ED1C27]" />
-            <h3 className="font-bold text-xs text-white uppercase tracking-wider font-mono">
-              Cryptographic Audit Chain Block Explorer (Recent 10 Blocks)
-            </h3>
-          </div>
-          <span className="text-[10px] font-mono text-white/40">SHA-256(H_(n-1) + Record_n)</span>
+      {tamperMessage && (
+        <div className="p-3 bg-[#0c0e14] border border-amber-500/30 text-amber-300 rounded-lg text-xs font-mono">
+          Demo Test Action: {tamperMessage}
+        </div>
+      )}
+
+      {/* Vertical Cryptographic Audit Timeline */}
+      <div className="bg-[#0c0e14] border border-white/[0.08] rounded-xl p-6 shadow-lg space-y-4">
+        <div className="flex items-center justify-between border-b border-white/[0.06] pb-3">
+          <span className="font-bold text-xs text-white uppercase tracking-wider font-mono">
+            CRYPTOGRAPHIC AUDIT CHAIN (RECENT BLOCKS)
+          </span>
+          <span className="text-[10px] font-mono text-slate-500">
+            SHA-256(H_(n-1) + Record_n)
+          </span>
         </div>
 
-        <div className="space-y-2.5">
-          {inspections.map((ins) => (
+        <div className="space-y-3 font-mono text-xs">
+          {inspections.map((ins, idx) => (
             <div
               key={ins.id}
-              className="p-3.5 bg-black/60 border border-white/10 rounded-xl flex flex-col md:flex-row md:items-center justify-between gap-3 text-xs font-mono"
+              className="p-3.5 bg-[#08090d] border border-white/[0.05] hover:border-white/15 rounded-lg flex flex-col md:flex-row md:items-center justify-between gap-3 transition-colors"
             >
               <div className="flex items-center gap-3">
-                <span className="text-[#ED1C27] font-bold">{ins.id}</span>
-                <span className="text-white font-sans font-semibold">{ins.billet_id}</span>
-                <span className="text-white/50">({ins.heat_number})</span>
-                <span
-                  className={`px-2 py-0.5 rounded-full text-[10px] font-bold border ${
-                    ins.status === "PASS"
-                      ? "bg-emerald-500/15 text-emerald-300 border-emerald-500/40"
-                      : "bg-[#ED1C27]/15 text-[#ED1C27] border-[#ED1C27]/40"
-                  }`}
-                >
-                  {ins.status}
+                <span className="text-slate-500 text-[11px]">
+                  {new Date(ins.timestamp).toLocaleTimeString()}
                 </span>
+                <span className="font-bold text-slate-200">{ins.id}</span>
+                <span className="text-white font-bold">{ins.billet_id}</span>
+                <span className="text-slate-400">({ins.heat_number})</span>
+                <StatusBadge status={ins.status} size="sm" />
               </div>
 
-              <div className="text-white/50 text-[11px] truncate max-w-md">
-                <span className="text-white/30">HASH: </span>
-                <span className="text-white select-all">{ins.audit_hash}</span>
+              <div className="flex items-center gap-2 text-[11px] text-slate-400">
+                <span className="text-slate-600">HASH:</span>
+                <span className="text-slate-300 font-mono">
+                  {ins.audit_hash ? `${ins.audit_hash.substring(0, 16)}...${ins.audit_hash.substring(56)}` : "GEN-v2"}
+                </span>
+                <button
+                  onClick={() => ins.audit_hash && handleCopy(ins.audit_hash)}
+                  className="p-1 rounded hover:bg-white/10 text-slate-400 hover:text-white transition-colors"
+                  title="Copy Full SHA-256 Hash"
+                >
+                  {copiedHash === ins.audit_hash ? (
+                    <Check className="w-3.5 h-3.5 text-emerald-400" />
+                  ) : (
+                    <Copy className="w-3.5 h-3.5" />
+                  )}
+                </button>
               </div>
             </div>
           ))}

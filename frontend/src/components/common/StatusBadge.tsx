@@ -1,6 +1,6 @@
 import React from "react";
 import { InspectionStatus, DefectSeverity } from "@/lib/types";
-import { CheckCircle2, XCircle, AlertTriangle, HelpCircle, ShieldAlert } from "lucide-react";
+import { Check, X, AlertTriangle, HelpCircle } from "lucide-react";
 
 interface StatusBadgeProps {
   status: InspectionStatus | string;
@@ -15,39 +15,44 @@ export const StatusBadge: React.FC<StatusBadgeProps> = ({
 }) => {
   const normalized = (status || "").toUpperCase();
 
-  let bg = "bg-slate-900/80 text-slate-300 border-white/10";
-  let icon = <HelpCircle className="w-3.5 h-3.5" />;
+  let bg = "bg-white/[0.04] text-white/70 border-white/10";
+  let dot = "bg-white/40";
+  let icon = <HelpCircle className="w-3 h-3" />;
   let label = normalized || "UNKNOWN";
 
   if (normalized === "PASS") {
-    bg = "bg-emerald-500/15 text-emerald-400 border-emerald-500/40 shadow-[0_0_14px_rgba(16,185,129,0.25)]";
-    icon = <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />;
+    bg = "bg-emerald-500/10 text-emerald-400 border-emerald-500/30";
+    dot = "bg-emerald-400";
+    icon = <Check className="w-3 h-3 text-emerald-400" strokeWidth={3} />;
     label = "PASS";
-  } else if (normalized === "FAIL") {
-    bg = "bg-rose-500/15 text-rose-400 border-rose-500/40 shadow-[0_0_14px_rgba(239,68,68,0.25)]";
-    icon = <XCircle className="w-3.5 h-3.5 text-rose-400" />;
+  } else if (normalized === "FAIL" || normalized === "REJECT") {
+    bg = "bg-[#ED1C27]/15 text-[#ff4b55] border-[#ED1C27]/40";
+    dot = "bg-[#ED1C27]";
+    icon = <X className="w-3 h-3 text-[#ff4b55]" strokeWidth={3} />;
     label = "FAIL";
   } else if (normalized === "REWORK") {
-    bg = "bg-amber-500/15 text-amber-400 border-amber-500/40 shadow-[0_0_14px_rgba(245,158,11,0.25)]";
-    icon = <AlertTriangle className="w-3.5 h-3.5 text-amber-400" />;
+    bg = "bg-amber-500/10 text-amber-400 border-amber-500/30";
+    dot = "bg-amber-400";
+    icon = <AlertTriangle className="w-3 h-3 text-amber-400" />;
     label = "REWORK";
-  } else if (normalized === "NEEDS_REVIEW" || normalized === "REVIEW_REQUIRED" || normalized === "PENDING") {
-    bg = "bg-yellow-500/15 text-yellow-400 border-yellow-500/40 shadow-[0_0_14px_rgba(234,179,8,0.25)]";
-    icon = <HelpCircle className="w-3.5 h-3.5 text-yellow-400" />;
-    label = "NEEDS REVIEW";
+  } else if (normalized === "NEEDS_REVIEW" || normalized === "REVIEW_REQUIRED" || normalized === "PENDING" || normalized === "REVIEW") {
+    bg = "bg-yellow-500/10 text-yellow-300 border-yellow-500/30";
+    dot = "bg-yellow-400";
+    icon = <HelpCircle className="w-3 h-3 text-yellow-300" />;
+    label = "REVIEW";
   }
 
   const sizeClasses = {
-    sm: "px-2 py-0.5 text-[10px] font-bold gap-1 rounded-full",
-    md: "px-3 py-1 text-xs font-bold gap-1.5 rounded-full",
-    lg: "px-4 py-1.5 text-sm font-bold gap-2 rounded-full",
+    sm: "px-2 py-0.5 text-[10px] gap-1 rounded",
+    md: "px-2.5 py-1 text-[11px] gap-1.5 rounded-md",
+    lg: "px-3.5 py-1.5 text-xs gap-2 rounded-lg",
   }[size];
 
   return (
     <span
-      className={`inline-flex items-center border tracking-wider uppercase font-mono backdrop-blur-sm transition-all ${sizeClasses} ${bg}`}
+      className={`inline-flex items-center font-mono font-bold tracking-wider uppercase border transition-colors ${sizeClasses} ${bg}`}
     >
-      {showIcon && icon}
+      <span className={`w-1.5 h-1.5 rounded-full ${dot} shrink-0`} />
       <span>{label}</span>
     </span>
   );
@@ -55,21 +60,27 @@ export const StatusBadge: React.FC<StatusBadgeProps> = ({
 
 export const SeverityBadge: React.FC<{ severity: DefectSeverity | string }> = ({ severity }) => {
   const sev = (severity || "").toUpperCase();
-  let color = "bg-slate-800 text-slate-300 border-white/10";
+  let color = "bg-white/[0.04] text-white/60 border-white/10";
+  let dot = "bg-white/40";
 
   if (sev === "CRITICAL") {
-    color = "bg-rose-500/20 text-rose-300 border-rose-500/40 shadow-[0_0_10px_rgba(239,68,68,0.2)]";
+    color = "bg-[#ED1C27]/15 text-[#ff4b55] border-[#ED1C27]/40";
+    dot = "bg-[#ED1C27]";
   } else if (sev === "MAJOR") {
-    color = "bg-amber-500/20 text-amber-300 border-amber-500/40 shadow-[0_0_10px_rgba(245,158,11,0.2)]";
+    color = "bg-amber-500/15 text-amber-300 border-amber-500/30";
+    dot = "bg-amber-400";
   } else if (sev === "MODERATE") {
-    color = "bg-yellow-500/20 text-yellow-300 border-yellow-500/40";
+    color = "bg-yellow-500/10 text-yellow-300 border-yellow-500/30";
+    dot = "bg-yellow-400";
   } else if (sev === "MINOR") {
-    color = "bg-cyan-500/20 text-cyan-300 border-cyan-500/40";
+    color = "bg-sky-500/10 text-sky-300 border-sky-500/30";
+    dot = "bg-sky-400";
   }
 
   return (
-    <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-mono font-bold border tracking-wide uppercase ${color}`}>
-      {sev}
+    <span className={`inline-flex items-center gap-1.5 px-2 py-0.5 rounded text-[10px] font-mono font-semibold border tracking-wide uppercase ${color}`}>
+      <span className={`w-1 h-1 rounded-full ${dot}`} />
+      <span>{sev}</span>
     </span>
   );
 };
