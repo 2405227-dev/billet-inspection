@@ -1,0 +1,105 @@
+cameras:
+  - id: "CAM-01"
+    name: "Top Surface High-Speed Matrix"
+    position: "TOP"
+    orientation: "NADIR_0_DEG"
+    camera_type: "GigE_AREA_SCAN"
+    sensor_model: "Sony Pregius IMX530 CMOS"
+    resolution:
+      width: 4096
+      height: 2160
+    fps: 60
+    exposure_us: 1200
+    gain_db: 4.5
+    pixel_pitch_um: 2.74
+    lens_focal_length_mm: 35.0
+    field_of_view_mm: [1800, 950]
+    calibration_id: "CALIB-CAM01-2026-v4"
+    pixel_to_mm_ratio: 0.439
+    lighting_profile: "POLARIZED_WHITE_LED_COAXIAL"
+    hardware_trigger: true
+    encoder_synced: true
+
+  - id: "CAM-02"
+    name: "Bottom Surface Line-Scan"
+    position: "BOTTOM"
+    orientation: "ZENITH_180_DEG"
+    camera_type: "GigE_LINE_SCAN"
+    sensor_model: "Teledyne DALSA Linea 8k"
+    resolution:
+      width: 4096
+      height: 2048
+    fps: 60
+    exposure_us: 1000
+    gain_db: 3.0
+    pixel_pitch_um: 3.5
+    lens_focal_length_mm: 50.0
+    field_of_view_mm: [1800, 900]
+    calibration_id: "CALIB-CAM02-2026-v3"
+    pixel_to_mm_ratio: 0.439
+    lighting_profile: "HIGH_INTENSITY_LINEAR_LED"
+    hardware_trigger: true
+    encoder_synced: true
+
+  - id: "CAM-03"
+    name: "Left Lateral Profile"
+    position: "LEFT"
+    orientation: "SIDE_90_DEG"
+    camera_type: "GigE_AREA_SCAN"
+    sensor_model: "Basler ace 2 Pro"
+    resolution:
+      width: 3840
+      height: 2160
+    fps: 45
+    exposure_us: 1500
+    gain_db: 4.0
+    pixel_pitch_um: 3.45
+    lens_focal_length_mm: 25.0
+    field_of_view_mm: [1600, 900]
+    calibration_id: "CALIB-CAM03-2026-v2"
+    pixel_to_mm_ratio: 0.416
+    lighting_profile: "DIFFUSE_DARKFIELD_LED"
+    hardware_trigger: true
+    encoder_synced: true
+
+  - id: "CAM-04"
+    name: "Right Lateral Profile"
+    position: "RIGHT"
+    orientation: "SIDE_270_DEG"
+    camera_type: "GigE_AREA_SCAN"
+    sensor_model: "Basler ace 2 Pro"
+    resolution:
+      width: 3840
+      height: 2160
+    fps: 45
+    exposure_us: 1500
+    gain_db: 4.0
+    pixel_pitch_um: 3.45
+    lens_focal_length_mm: 25.0
+    field_of_view_mm: [1600, 900]
+    calibration_id: "CALIB-CAM04-2026-v2"
+    pixel_to_mm_ratio: 0.416
+    lighting_profile: "DIFFUSE_DARKFIELD_LED"
+    hardware_trigger: true
+    encoder_synced: true
+
+  - id: "CAM-05"
+    name: "End Face Stamp & OCR"
+    position: "END_FACE"
+    orientation: "AXIAL_HEAD"
+    camera_type: "GigE_AREA_SCAN"
+    sensor_model: "FLIR Blackfly S USB3/GigE"
+    resolution:
+      width: 4096
+      height: 2160
+    fps: 30
+    exposure_us: 2000
+    gain_db: 2.0
+    pixel_pitch_um: 3.45
+    lens_focal_length_mm: 75.0
+    field_of_view_mm: [450, 240]
+    calibration_id: "CALIB-CAM05-2026-v5"
+    pixel_to_mm_ratio: 0.110
+    lighting_profile: "LOW_ANGLE_OBLIQUE_OCR_LED"
+    hardware_trigger: true
+    encoder_synced: false

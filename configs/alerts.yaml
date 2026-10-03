@@ -1,0 +1,73 @@
+alerts:
+  channels:
+    websocket: true
+    audio_chime: true
+    stack_light: true
+    plc_signal: true
+    email_notification: false
+
+  definitions:
+    CRITICAL_DEFECT:
+      severity: "CRITICAL"
+      stack_light_color: "RED_FLASHING"
+      plc_action: "EMERGENCY_DIVERTER_REJECT"
+      sound: "alarm_critical.mp3"
+      auto_dismiss: false
+
+    DIMENSION_OUT_OF_TOLERANCE:
+      severity: "MAJOR"
+      stack_light_color: "RED_STEADY"
+      plc_action: "HOLD_OR_REJECT"
+      sound: "alarm_major.mp3"
+      auto_dismiss: false
+
+    OCR_FAILURE:
+      severity: "MODERATE"
+      stack_light_color: "YELLOW_STEADY"
+      plc_action: "BUFFER_FOR_MANUAL_TAGGING"
+      sound: "alert_warning.mp3"
+      auto_dismiss: true
+      auto_dismiss_timeout_sec: 15
+
+    CAMERA_FAILURE:
+      severity: "CRITICAL"
+      stack_light_color: "RED_FLASHING"
+      plc_action: "LINE_HOLD"
+      sound: "alarm_system.mp3"
+      auto_dismiss: false
+
+    CALIBRATION_ERROR:
+      severity: "CRITICAL"
+      stack_light_color: "RED_FLASHING"
+      plc_action: "LINE_HOLD"
+      sound: "alarm_system.mp3"
+      auto_dismiss: false
+
+    MODEL_ERROR:
+      severity: "MAJOR"
+      stack_light_color: "YELLOW_FLASHING"
+      plc_action: "HOLD_OR_REVIEW"
+      sound: "alert_warning.mp3"
+      auto_dismiss: false
+
+    LOW_CONFIDENCE:
+      severity: "MODERATE"
+      stack_light_color: "YELLOW_STEADY"
+      plc_action: "ROUTE_TO_REVIEW_STATION"
+      sound: "alert_info.mp3"
+      auto_dismiss: true
+      auto_dismiss_timeout_sec: 20
+
+    NDT_POSITIVE:
+      severity: "MAJOR"
+      stack_light_color: "RED_STEADY"
+      plc_action: "ROUTE_TO_GRINDING_REWORK"
+      sound: "alarm_major.mp3"
+      auto_dismiss: false
+
+    SYSTEM_ERROR:
+      severity: "CRITICAL"
+      stack_light_color: "RED_FLASHING"
+      plc_action: "LINE_HOLD"
+      sound: "alarm_system.mp3"
+      auto_dismiss: false

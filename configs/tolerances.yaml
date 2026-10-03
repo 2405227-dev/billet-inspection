@@ -1,0 +1,77 @@
+tolerances:
+  dimensions:
+    length_mm:
+      nominal: 6000.0
+      min: 5800.0
+      max: 6200.0
+      warning_min: 5850.0
+      warning_max: 6150.0
+      max_allowed_error_pct: 1.0 # Requirement: <= ±1% after calibration
+    width_mm:
+      nominal: 150.0
+      min: 147.0
+      max: 153.0
+      warning_min: 148.0
+      warning_max: 152.0
+      max_allowed_error_pct: 1.0
+    height_mm:
+      nominal: 150.0
+      min: 147.0
+      max: 153.0
+      warning_min: 148.0
+      warning_max: 152.0
+      max_allowed_error_pct: 1.0
+    rhomboidity_deg_max: 1.5
+    camber_mm_per_m_max: 5.0
+    corner_radius_mm:
+      nominal: 8.0
+      min: 6.0
+      max: 12.0
+
+  defects:
+    severity_rules:
+      CRITICAL:
+        max_allowed_count: 0
+        action: "REJECT" # Automatic FAIL
+        criteria:
+          - "Longitudinal crack length > 50 mm"
+          - "Transverse crack length > 25 mm"
+          - "Any crack depth > 2.0 mm (NDT / optical shadow estimation)"
+          - "Corner crack > 30 mm"
+          - "Major deep scab or heavy lap"
+      MAJOR:
+        max_allowed_count: 0 # Triggers REWORK if reworkable, else FAIL
+        action: "REWORK"
+        criteria:
+          - "Longitudinal crack length 20 mm - 50 mm"
+          - "Transverse crack length 10 mm - 25 mm"
+          - "Surface seam length > 40 mm"
+          - "Sliver area > 100 mm2"
+          - "Scab area > 80 mm2"
+      MODERATE:
+        max_allowed_count: 2
+        action: "REWORK"
+        criteria:
+          - "Crack length 5 mm - 20 mm"
+          - "Surface scratch length > 30 mm"
+          - "Scale pit cluster area 25 - 80 mm2"
+      MINOR:
+        max_allowed_count: 5
+        action: "PASS"
+        criteria:
+          - "Hairline crack < 5 mm"
+          - "Light scale patch < 25 mm2"
+          - "Minor roll mark or superficial scratch < 15 mm"
+      UNKNOWN:
+        action: "NEEDS_REVIEW"
+
+  confidence_gates:
+    min_defect_classification_confidence: 0.70
+    min_billet_detection_confidence: 0.85
+    min_ocr_confidence: 0.80
+    review_trigger_confidence: 0.75
+
+  sensor_fusion:
+    eddy_current_weight: 0.45
+    vision_weight: 0.55
+    ndt_conflict_action: "NEEDS_REVIEW"

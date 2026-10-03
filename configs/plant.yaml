@@ -1,0 +1,32 @@
+plant:
+  id: "PLANT-RAIPUR-01"
+  name: "NIT Raipur Integrated Steel Plant"
+  location: "Raipur, Chhattisgarh, India"
+  production_lines:
+    - id: "LINE-BILLET-01"
+      name: "Continuous Casting & Billet Rolling Line #1"
+      conveyor_speed_m_per_s: 0.85
+      inspection_zone_length_mm: 7500
+      billet_nominal_length_mm: 6000
+      billet_nominal_section_mm: 150
+      steel_grades:
+        - "IS 2830 / Fe 500D"
+        - "SAE 1018"
+        - "EN 8 / AISI 1045"
+        - "ASTM A36"
+    - id: "LINE-BILLET-02"
+      name: "Secondary Cooling Bed Inspection Line #2"
+      conveyor_speed_m_per_s: 0.60
+      inspection_zone_length_mm: 8000
+      billet_nominal_length_mm: 6000
+      billet_nominal_section_mm: 130
+      steel_grades:
+        - "IS 1786 / Fe 550D"
+        - "SAE 1020"
+
+environment:
+  ambient_temp_c_min: 15
+  ambient_temp_c_max: 55
+  billet_surface_temp_c_min: 200
+  billet_surface_temp_c_max: 750
+  lighting_lux_target: 3500
