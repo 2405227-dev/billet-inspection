@@ -1,5 +1,8 @@
+"use client";
+
 import React from "react";
 import { StatsOverview } from "@/lib/types";
+import { GlowCard } from "@/components/ui/GlowCard";
 import {
   Layers,
   CheckCircle2,
@@ -9,7 +12,9 @@ import {
   Clock,
   Scan,
   ShieldCheck,
+  Cpu,
 } from "lucide-react";
+import { motion } from "framer-motion";
 
 interface KPICardsProps {
   stats: StatsOverview | null;
@@ -29,106 +34,113 @@ export const KPICards: React.FC<KPICardsProps> = ({ stats }) => {
     {
       title: "TOTAL BILLETS",
       value: total.toLocaleString(),
-      subtext: "Shift Cumulative",
+      subtext: "Continuous In-Line",
       icon: Layers,
-      color: "text-cyan-400",
-      bg: "bg-slate-900 border-slate-800",
+      glow: "cyan" as const,
+      textColor: "text-cyan-400",
       badge: "100% Tracked",
-      badgeColor: "bg-cyan-950 text-cyan-300 border-cyan-800",
+      badgeColor: "bg-cyan-500/15 text-cyan-300 border-cyan-500/30",
     },
     {
-      title: "FIRST-TIME PASS",
-      value: passCount.toLocaleString(),
-      subtext: `Yield: ${passRate}%`,
+      title: "PASS RATE",
+      value: `${passRate.toFixed(1)}%`,
+      subtext: `${passCount.toLocaleString()} Billets Conforming`,
       icon: CheckCircle2,
-      color: "text-emerald-400",
-      bg: "bg-slate-900 border-slate-800",
-      badge: `${passRate}%`,
-      badgeColor: "bg-emerald-950 text-emerald-300 border-emerald-800",
+      glow: "emerald" as const,
+      textColor: "text-emerald-400",
+      badge: "ISO 9001",
+      badgeColor: "bg-emerald-500/15 text-emerald-300 border-emerald-500/30",
     },
     {
-      title: "REWORK REQUIRED",
+      title: "REWORK",
       value: reworkCount.toLocaleString(),
-      subtext: "Grinding / Surface Rework",
+      subtext: "Surface Grinding Required",
       icon: AlertTriangle,
-      color: "text-amber-400",
-      bg: "bg-slate-900 border-slate-800",
+      glow: "amber" as const,
+      textColor: "text-amber-400",
       badge: `${Math.round((reworkCount / Math.max(total, 1)) * 100)}%`,
-      badgeColor: "bg-amber-950 text-amber-300 border-amber-800",
+      badgeColor: "bg-amber-500/15 text-amber-300 border-amber-500/30",
     },
     {
       title: "REJECTED (FAIL)",
       value: failCount.toLocaleString(),
-      subtext: "Dimensional / Critical Flaw",
+      subtext: "Critical Dimensional / Crack",
       icon: XCircle,
-      color: "text-rose-400",
-      bg: "bg-slate-900 border-slate-800",
+      glow: "rose" as const,
+      textColor: "text-rose-400",
       badge: `${Math.round((failCount / Math.max(total, 1)) * 100)}%`,
-      badgeColor: "bg-rose-950 text-rose-300 border-rose-800",
+      badgeColor: "bg-rose-500/15 text-rose-300 border-rose-500/30",
     },
     {
-      title: "PENDING REVIEW",
+      title: "NEEDS REVIEW",
       value: reviewCount.toLocaleString(),
-      subtext: "Low Conf / Sensor Conflict",
+      subtext: "Operator Sign-Off Required",
       icon: HelpCircle,
-      color: "text-yellow-400",
-      bg: "bg-slate-900 border-slate-800",
+      glow: "amber" as const,
+      textColor: "text-yellow-400",
       badge: "Action Req",
-      badgeColor: "bg-yellow-950 text-yellow-300 border-yellow-800",
+      badgeColor: "bg-yellow-500/15 text-yellow-300 border-yellow-500/30",
     },
     {
-      title: "OCR RECOGNITION",
+      title: "OCR CONFIDENCE",
       value: `${ocrRate}%`,
-      subtext: "Heat & Batch Marking",
+      subtext: "Heat & Grade Extraction",
       icon: Scan,
-      color: "text-blue-400",
-      bg: "bg-slate-900 border-slate-800",
-      badge: ">=80% Conf",
-      badgeColor: "bg-blue-950 text-blue-300 border-blue-800",
+      glow: "blue" as const,
+      textColor: "text-blue-400",
+      badge: ">=90% Conf",
+      badgeColor: "bg-blue-500/15 text-blue-300 border-blue-500/30",
     },
     {
       title: "CYCLE LATENCY",
       value: `${avgLatency} ms`,
-      subtext: "Full Vision & Metrology",
+      subtext: "5-Cam Edge Inference",
       icon: Clock,
-      color: "text-indigo-400",
-      bg: "bg-slate-900 border-slate-800",
-      badge: "< 350 ms",
-      badgeColor: "bg-indigo-950 text-indigo-300 border-indigo-800",
+      glow: "cyan" as const,
+      textColor: "text-cyan-300",
+      badge: "< 250ms",
+      badgeColor: "bg-cyan-500/15 text-cyan-300 border-cyan-500/30",
     },
   ];
 
   return (
-    <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-3">
+    <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-3 mb-8">
       {cards.map((c, i) => {
         const Icon = c.icon;
         return (
-          <div
+          <motion.div
             key={i}
-            className={`${c.bg} border rounded-xl p-3.5 flex flex-col justify-between shadow-sm hover:border-slate-700 transition-all`}
+            initial={{ opacity: 0, y: 15 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.4, delay: i * 0.05 }}
           >
-            <div className="flex items-center justify-between gap-1 mb-2">
-              <span className="text-[10px] font-bold tracking-wider text-slate-400 uppercase truncate">
-                {c.title}
-              </span>
-              <Icon className={`w-4 h-4 ${c.color} shrink-0`} />
-            </div>
+            <GlowCard
+              glowColor={c.glow}
+              className="p-4 flex flex-col justify-between h-full bg-[#070b14]/90 border-white/10"
+            >
+              <div className="flex items-center justify-between gap-1 mb-2">
+                <span className="text-[10px] font-bold font-mono tracking-wider text-slate-400 uppercase truncate">
+                  {c.title}
+                </span>
+                <Icon className={`w-4 h-4 ${c.textColor} shrink-0`} />
+              </div>
 
-            <div className="flex items-baseline justify-between gap-2">
-              <span className="text-xl font-extrabold font-mono text-slate-100 tracking-tight">
-                {c.value}
-              </span>
-              <span
-                className={`text-[9px] font-mono font-bold px-1.5 py-0.5 rounded border uppercase shrink-0 ${c.badgeColor}`}
-              >
-                {c.badge}
-              </span>
-            </div>
+              <div className="flex items-baseline justify-between gap-1 my-1">
+                <span className={`text-xl font-black font-mono tracking-tight text-white`}>
+                  {c.value}
+                </span>
+                <span
+                  className={`text-[9px] font-mono font-bold px-1.5 py-0.5 rounded-full border uppercase shrink-0 ${c.badgeColor}`}
+                >
+                  {c.badge}
+                </span>
+              </div>
 
-            <div className="text-[10px] text-slate-500 font-sans mt-1.5 truncate">
-              {c.subtext}
-            </div>
-          </div>
+              <div className="text-[10px] text-slate-400 font-sans truncate mt-1">
+                {c.subtext}
+              </div>
+            </GlowCard>
+          </motion.div>
         );
       })}
     </div>

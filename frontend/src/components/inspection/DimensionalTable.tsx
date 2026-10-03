@@ -1,3 +1,5 @@
+"use client";
+
 import React from "react";
 import { DimensionItem } from "@/lib/types";
 import { Ruler, Check, X, AlertCircle } from "lucide-react";
@@ -17,10 +19,9 @@ export const DimensionalTable: React.FC<DimensionalTableProps> = ({
   height_mm,
   status,
 }) => {
-  // If no items provided, generate standard 3-axis representation
   const items: DimensionItem[] = dimensions && dimensions.length > 0 ? dimensions : [
     {
-      dimension_name: "Length",
+      dimension_name: "Length (L)",
       measured_value_mm: length_mm || 6000,
       nominal_mm: 6000,
       expected_min_mm: 5800,
@@ -30,7 +31,7 @@ export const DimensionalTable: React.FC<DimensionalTableProps> = ({
       camera_id: "CAM-01",
     },
     {
-      dimension_name: "Width",
+      dimension_name: "Width (W)",
       measured_value_mm: width_mm || 150,
       nominal_mm: 150,
       expected_min_mm: 147,
@@ -40,7 +41,7 @@ export const DimensionalTable: React.FC<DimensionalTableProps> = ({
       camera_id: "CAM-01",
     },
     {
-      dimension_name: "Height",
+      dimension_name: "Height (H)",
       measured_value_mm: height_mm || 150,
       nominal_mm: 150,
       expected_min_mm: 147,
@@ -52,77 +53,79 @@ export const DimensionalTable: React.FC<DimensionalTableProps> = ({
   ];
 
   return (
-    <div className="bg-slate-900 border border-slate-800 rounded-xl p-5 space-y-4">
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          <Ruler className="w-4 h-4 text-cyan-400" />
-          <h3 className="font-bold text-sm text-slate-100 uppercase tracking-wider">
-            Dimensional Metrology & Tolerances
+    <div className="bg-[#0a0a0a] border border-white/10 rounded-2xl p-6 space-y-5 shadow-2xl backdrop-blur-xl">
+      <div className="flex items-center justify-between border-b border-white/10 pb-4">
+        <div className="flex items-center gap-2.5">
+          <div className="p-1.5 rounded-lg bg-[#ED1C27]/20 border border-[#ED1C27]/50 text-[#ED1C27]">
+            <Ruler className="w-4 h-4" />
+          </div>
+          <h3 className="font-bold text-sm text-white uppercase tracking-wider font-mono">
+            Calibrated Dimensional Metrology & Tolerances
           </h3>
         </div>
-        <div className="text-xs font-mono text-slate-400">
-          Target Error: <span className="text-emerald-400 font-bold">&le; &plusmn;1.0%</span>
+        <div className="text-xs font-mono text-white/50">
+          Target Accuracy: <span className="text-emerald-400 font-bold">&le; &plusmn;1.0%</span>
         </div>
       </div>
 
       <div className="overflow-x-auto">
         <table className="w-full text-left text-xs border-collapse">
           <thead>
-            <tr className="border-b border-slate-800 text-slate-400 font-mono text-[11px] uppercase">
+            <tr className="border-b border-white/10 text-white/50 font-mono text-[11px] uppercase">
               <th className="py-2.5 px-3">Parameter</th>
               <th className="py-2.5 px-3">Measured</th>
               <th className="py-2.5 px-3">Nominal</th>
               <th className="py-2.5 px-3">Allowed Tolerance</th>
               <th className="py-2.5 px-3">Deviation</th>
-              <th className="py-2.5 px-3">Tolerance Compliance</th>
-              <th className="py-2.5 px-3 text-right">Result</th>
+              <th className="py-2.5 px-3">Tolerance Bar</th>
+              <th className="py-2.5 px-3 text-right">Verdict</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-slate-800/60 font-mono">
+          <tbody className="divide-y divide-white/5 font-mono">
             {items.map((dim, idx) => {
               const isPass = dim.status === "PASS";
               const devAbs = Math.abs(dim.deviation_pct);
-              const barWidth = Math.min(devAbs * 35, 100);
+              const barWidth = Math.min(devAbs * 40, 100);
 
               return (
-                <tr key={idx} className="hover:bg-slate-800/30 transition-colors">
-                  <td className="py-3 px-3 font-sans font-bold text-slate-200">
+                <tr key={idx} className="hover:bg-white/[0.04] transition-colors">
+                  <td className="py-3.5 px-3 font-sans font-bold text-white">
                     {dim.dimension_name}
                   </td>
-                  <td className="py-3 px-3 text-slate-100 font-bold text-sm">
-                    {dim.measured_value_mm} <span className="text-[10px] text-slate-500 font-normal">mm</span>
+                  <td className="py-3.5 px-3 text-white font-bold text-sm">
+                    {dim.measured_value_mm} <span className="text-[10px] text-white/40 font-normal">mm</span>
                   </td>
-                  <td className="py-3 px-3 text-slate-400">
+                  <td className="py-3.5 px-3 text-white/50">
                     {dim.nominal_mm} mm
                   </td>
-                  <td className="py-3 px-3 text-slate-300">
+                  <td className="py-3.5 px-3 text-white/70">
                     [{dim.expected_min_mm} – {dim.expected_max_mm} mm]
                   </td>
-                  <td className="py-3 px-3">
+                  <td className="py-3.5 px-3">
                     <span
                       className={`font-bold ${
-                        isPass ? "text-slate-200" : "text-rose-400"
+                        isPass ? "text-white" : "text-[#ED1C27]"
                       }`}
                     >
                       {dim.deviation_pct > 0 ? `+${dim.deviation_pct}` : dim.deviation_pct}%
                     </span>
                   </td>
-                  <td className="py-3 px-3 w-40">
-                    <div className="w-full bg-slate-950 rounded-full h-2 overflow-hidden border border-slate-800 flex items-center">
+                  <td className="py-3.5 px-3 w-40">
+                    <div className="w-full bg-black rounded-full h-2 overflow-hidden border border-white/10 flex items-center">
                       <div
                         className={`h-full rounded-full ${
-                          isPass ? "bg-cyan-500" : "bg-rose-500"
+                          isPass ? "bg-emerald-400" : "bg-[#ED1C27]"
                         }`}
                         style={{ width: `${Math.max(barWidth, 8)}%` }}
                       />
                     </div>
                   </td>
-                  <td className="py-3 px-3 text-right">
+                  <td className="py-3.5 px-3 text-right">
                     <span
-                      className={`inline-flex items-center gap-1 px-2 py-0.5 rounded text-[11px] font-bold border ${
+                      className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold border ${
                         isPass
-                          ? "bg-emerald-950 text-emerald-400 border-emerald-800"
-                          : "bg-rose-950 text-rose-400 border-rose-800"
+                          ? "bg-emerald-500/15 text-emerald-300 border-emerald-500/40 shadow-[0_0_10px_rgba(16,185,129,0.2)]"
+                          : "bg-[#ED1C27]/15 text-[#ED1C27] border-[#ED1C27]/40 shadow-[0_0_10px_rgba(237,28,39,0.2)]"
                       }`}
                     >
                       {isPass ? <Check className="w-3 h-3" /> : <X className="w-3 h-3" />}

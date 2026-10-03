@@ -53,25 +53,25 @@ export const OperatorReviewModal: React.FC<OperatorReviewModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
-      <div className="bg-slate-900 border border-slate-700 rounded-xl max-w-lg w-full p-6 shadow-2xl space-y-5">
-        <div className="flex items-center justify-between border-b border-slate-800 pb-3">
-          <div className="flex items-center gap-2.5">
-            <div className="p-2 rounded-lg bg-cyan-950 text-cyan-400 border border-cyan-800">
+    <div className="fixed inset-0 z-50 bg-black/85 backdrop-blur-md flex items-center justify-center p-4">
+      <div className="bg-[#0a0a0a] border border-white/15 rounded-3xl max-w-lg w-full p-6 sm:p-7 shadow-2xl space-y-5 animate-in fade-in zoom-in-95 duration-200">
+        <div className="flex items-center justify-between border-b border-white/10 pb-4">
+          <div className="flex items-center gap-3">
+            <div className="p-2.5 rounded-2xl bg-[#ED1C27]/20 text-[#ED1C27] border border-[#ED1C27]/40">
               <UserCheck className="w-5 h-5" />
             </div>
             <div>
-              <h3 className="font-bold text-base text-slate-100">
+              <h3 className="font-bold text-base text-white">
                 Human-in-the-Loop Quality Review
               </h3>
-              <div className="text-xs font-mono text-slate-400">
-                Inspection ID: <span className="text-cyan-300">{inspectionId}</span>
+              <div className="text-xs font-mono text-white/50">
+                Inspection ID: <span className="text-[#ED1C27] font-bold">{inspectionId}</span>
               </div>
             </div>
           </div>
           <button
             onClick={onClose}
-            className="text-slate-400 hover:text-slate-200 p-1 rounded"
+            className="text-white/40 hover:text-white p-1 rounded-lg hover:bg-white/10 transition-colors"
           >
             <X className="w-5 h-5" />
           </button>
@@ -79,40 +79,40 @@ export const OperatorReviewModal: React.FC<OperatorReviewModalProps> = ({
 
         <form onSubmit={handleSubmit} className="space-y-4 text-xs">
           {error && (
-            <div className="p-3 bg-rose-950/80 border border-rose-700 text-rose-300 rounded-lg">
+            <div className="p-3 bg-[#18090b] border border-[#ED1C27]/60 text-white rounded-xl">
               {error}
             </div>
           )}
 
           {/* Original Decision Banner */}
-          <div className="p-3 bg-slate-950 border border-slate-800 rounded-lg flex items-center justify-between font-mono">
-            <span className="text-slate-400">Automated AI Decision:</span>
+          <div className="p-3.5 bg-black/80 border border-white/10 rounded-xl flex items-center justify-between font-mono">
+            <span className="text-white/50">Automated AI Decision:</span>
             <span className="font-bold text-amber-400">{initialStatus}</span>
           </div>
 
           {/* Operator ID */}
-          <div className="space-y-1">
-            <label className="text-slate-300 font-semibold block">Operator Badge / ID</label>
+          <div className="space-y-1.5">
+            <label className="text-white/70 font-semibold block font-mono">Operator Badge / ID</label>
             <input
               type="text"
               value={operatorId}
               onChange={(e) => setOperatorId(e.target.value)}
-              className="w-full bg-slate-950 border border-slate-800 rounded px-3 py-2 text-slate-100 font-mono focus:border-cyan-500 outline-none"
+              className="w-full bg-black border border-white/10 rounded-xl px-3.5 py-2.5 text-white font-mono focus:border-[#ED1C27] focus:ring-1 focus:ring-[#ED1C27] outline-none transition-all"
               required
             />
           </div>
 
           {/* Disposition Decision Selection */}
           <div className="space-y-1.5">
-            <label className="text-slate-300 font-semibold block">Quality Disposition Override</label>
+            <label className="text-white/70 font-semibold block font-mono">Quality Disposition Override</label>
             <div className="grid grid-cols-3 gap-2 font-mono">
               <button
                 type="button"
                 onClick={() => setDecision("PASS")}
-                className={`py-2 px-3 rounded-lg font-bold border flex items-center justify-center gap-1.5 transition-all ${
+                className={`py-2.5 px-3 rounded-xl font-bold border flex items-center justify-center gap-1.5 transition-all ${
                   decision === "PASS"
-                    ? "bg-emerald-950 text-emerald-300 border-emerald-600 shadow-sm"
-                    : "bg-slate-950 text-slate-400 border-slate-800"
+                    ? "bg-emerald-500/20 text-emerald-300 border-emerald-500/50 shadow-[0_0_12px_rgba(16,185,129,0.2)]"
+                    : "bg-black text-white/40 border-white/10"
                 }`}
               >
                 <CheckCircle2 className="w-3.5 h-3.5" />
@@ -121,10 +121,10 @@ export const OperatorReviewModal: React.FC<OperatorReviewModalProps> = ({
               <button
                 type="button"
                 onClick={() => setDecision("REWORK")}
-                className={`py-2 px-3 rounded-lg font-bold border flex items-center justify-center gap-1.5 transition-all ${
+                className={`py-2.5 px-3 rounded-xl font-bold border flex items-center justify-center gap-1.5 transition-all ${
                   decision === "REWORK"
-                    ? "bg-amber-950 text-amber-300 border-amber-600 shadow-sm"
-                    : "bg-slate-950 text-slate-400 border-slate-800"
+                    ? "bg-amber-500/20 text-amber-300 border-amber-500/50 shadow-[0_0_12px_rgba(245,158,11,0.2)]"
+                    : "bg-black text-white/40 border-white/10"
                 }`}
               >
                 <AlertTriangle className="w-3.5 h-3.5" />
@@ -133,10 +133,10 @@ export const OperatorReviewModal: React.FC<OperatorReviewModalProps> = ({
               <button
                 type="button"
                 onClick={() => setDecision("FAIL")}
-                className={`py-2 px-3 rounded-lg font-bold border flex items-center justify-center gap-1.5 transition-all ${
+                className={`py-2.5 px-3 rounded-xl font-bold border flex items-center justify-center gap-1.5 transition-all ${
                   decision === "FAIL"
-                    ? "bg-rose-950 text-rose-300 border-rose-600 shadow-sm"
-                    : "bg-slate-950 text-slate-400 border-slate-800"
+                    ? "bg-[#ED1C27]/20 text-white border-[#ED1C27]/50 shadow-[0_0_12px_rgba(237,28,39,0.3)]"
+                    : "bg-black text-white/40 border-white/10"
                 }`}
               >
                 <XCircle className="w-3.5 h-3.5" />
@@ -145,46 +145,46 @@ export const OperatorReviewModal: React.FC<OperatorReviewModalProps> = ({
             </div>
           </div>
 
-          {/* Corrected Heat OCR (optional) */}
-          <div className="space-y-1">
-            <label className="text-slate-300 font-semibold block">
+          {/* Corrected Heat OCR */}
+          <div className="space-y-1.5">
+            <label className="text-white/70 font-semibold block font-mono">
               Corrected Heat Number Marking (If OCR corrected)
             </label>
             <input
               type="text"
               value={correctedHeat}
               onChange={(e) => setCorrectedHeat(e.target.value)}
-              className="w-full bg-slate-950 border border-slate-800 rounded px-3 py-2 text-slate-100 font-mono focus:border-cyan-500 outline-none"
+              className="w-full bg-black border border-white/10 rounded-xl px-3.5 py-2.5 text-white font-mono focus:border-[#ED1C27] focus:ring-1 focus:ring-[#ED1C27] outline-none transition-all"
             />
           </div>
 
           {/* Audit Comment */}
-          <div className="space-y-1">
-            <label className="text-slate-300 font-semibold block">
-              Audit Rationale & Justification <span className="text-rose-400">*</span>
+          <div className="space-y-1.5">
+            <label className="text-white/70 font-semibold block font-mono">
+              Audit Rationale & Justification <span className="text-[#ED1C27]">*</span>
             </label>
             <textarea
               value={comment}
               onChange={(e) => setComment(e.target.value)}
               placeholder="e.g. Visual verification confirmed superficial mill scale rather than transverse crack. Approved for rolling."
               rows={3}
-              className="w-full bg-slate-950 border border-slate-800 rounded px-3 py-2 text-slate-100 font-sans focus:border-cyan-500 outline-none resize-none"
+              className="w-full bg-black border border-white/10 rounded-xl px-3.5 py-2.5 text-white font-sans focus:border-[#ED1C27] focus:ring-1 focus:ring-[#ED1C27] outline-none resize-none transition-all"
               required
             />
           </div>
 
-          <div className="pt-2 flex items-center justify-end gap-3 border-t border-slate-800">
+          <div className="pt-3 flex items-center justify-end gap-3 border-t border-white/10">
             <button
               type="button"
               onClick={onClose}
-              className="px-4 py-2 rounded bg-slate-800 hover:bg-slate-700 text-slate-300 font-semibold"
+              className="px-4 py-2 rounded-full bg-white/5 hover:bg-white/10 text-white/70 hover:text-white font-semibold transition-colors"
             >
               Cancel
             </button>
             <button
               type="submit"
               disabled={isSubmitting}
-              className="px-5 py-2 rounded bg-cyan-600 hover:bg-cyan-500 text-white font-bold flex items-center gap-1.5 disabled:opacity-50"
+              className="px-6 py-2.5 rounded-full bg-[#ED1C27] hover:bg-[#ff2a37] text-white font-bold flex items-center gap-1.5 disabled:opacity-50 shadow-[0_0_15px_rgba(237,28,39,0.4)] transition-all font-mono active:scale-95"
             >
               <ShieldCheck className="w-4 h-4" />
               <span>{isSubmitting ? "Committing..." : "Commit Audit Override"}</span>

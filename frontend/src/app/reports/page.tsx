@@ -2,13 +2,12 @@
 
 import React, { useState } from "react";
 import { getApiUrl } from "@/lib/api";
+import { GlowCard } from "@/components/ui/GlowCard";
 import {
   FileSpreadsheet,
   FileText,
   Download,
   Filter,
-  Search,
-  Calendar,
   Layers,
 } from "lucide-react";
 
@@ -30,30 +29,30 @@ export default function ReportsGeneratorPage() {
   const batchPdfUrl = getApiUrl(buildQuery("/api/export/pdf"));
 
   return (
-    <div className="space-y-6 max-w-5xl mx-auto">
+    <div className="space-y-8 max-w-5xl mx-auto">
       {/* Header */}
-      <div className="border-b border-slate-800 pb-4">
-        <h1 className="text-xl font-extrabold text-slate-100 uppercase tracking-wider flex items-center gap-2">
-          <FileSpreadsheet className="w-5 h-5 text-emerald-400" />
+      <div className="border-b border-white/10 pb-5">
+        <h1 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight flex items-center gap-2.5">
+          <FileSpreadsheet className="w-6 h-6 text-[#ED1C27]" />
           <span>Metallurgical Audit Reports & Data Export Center</span>
         </h1>
-        <p className="text-xs text-slate-400 mt-0.5">
+        <p className="text-xs text-white/50 mt-1">
           Generate filtered Excel workbooks, batch audit certificates, and ERP data feeds
         </p>
       </div>
 
       {/* Filter Parameters */}
-      <div className="bg-slate-900 border border-slate-800 rounded-xl p-5 shadow-sm space-y-4">
-        <div className="flex items-center gap-2 border-b border-slate-800 pb-2.5">
-          <Filter className="w-4 h-4 text-cyan-400" />
-          <h3 className="font-bold text-xs text-slate-100 uppercase tracking-wider">
+      <div className="bg-[#0a0a0a] border border-white/10 rounded-2xl p-6 shadow-2xl space-y-4 backdrop-blur-xl">
+        <div className="flex items-center gap-2 border-b border-white/10 pb-3">
+          <Filter className="w-4 h-4 text-[#ED1C27]" />
+          <h3 className="font-bold text-xs text-white uppercase tracking-wider font-mono">
             Report Scope & Filter Criteria
           </h3>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs font-mono">
-          <div className="space-y-1">
-            <label className="text-slate-300 font-sans font-semibold block">
+          <div className="space-y-1.5">
+            <label className="text-white/70 font-sans font-semibold block">
               Filter by Heat Number (Optional)
             </label>
             <input
@@ -61,18 +60,18 @@ export default function ReportsGeneratorPage() {
               value={heatNumber}
               onChange={(e) => setHeatNumber(e.target.value)}
               placeholder="e.g. 26A-1042 (Leave empty for all heats)"
-              className="w-full bg-slate-950 border border-slate-800 rounded px-3 py-2 text-slate-100 focus:border-cyan-500 outline-none"
+              className="w-full bg-black border border-white/10 rounded-xl px-3.5 py-2.5 text-white focus:border-[#ED1C27] focus:ring-1 focus:ring-[#ED1C27] outline-none transition-all"
             />
           </div>
 
-          <div className="space-y-1">
-            <label className="text-slate-300 font-sans font-semibold block">
+          <div className="space-y-1.5">
+            <label className="text-white/70 font-sans font-semibold block">
               Filter by Quality Status
             </label>
             <select
               value={status}
               onChange={(e) => setStatus(e.target.value)}
-              className="w-full bg-slate-950 border border-slate-800 rounded px-3 py-2 text-slate-100 focus:border-cyan-500 outline-none"
+              className="w-full bg-black border border-white/10 rounded-xl px-3.5 py-2.5 text-white focus:border-[#ED1C27] outline-none transition-all"
             >
               <option value="ALL">All Verdicts (PASS, REWORK, FAIL)</option>
               <option value="PASS">PASS Only (First-time Yield)</option>
@@ -85,20 +84,20 @@ export default function ReportsGeneratorPage() {
       </div>
 
       {/* Export Action Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {/* 1. Multi-Sheet Excel */}
-        <div className="bg-slate-900 border border-slate-800 rounded-xl p-6 shadow-sm flex flex-col justify-between space-y-4">
-          <div className="space-y-2">
+        <GlowCard glowColor="emerald" className="bg-[#0a0a0a] border-white/10 p-6 flex flex-col justify-between space-y-5">
+          <div className="space-y-2.5">
             <div className="flex items-center justify-between">
               <FileSpreadsheet className="w-8 h-8 text-emerald-400" />
-              <span className="text-xs font-mono font-bold px-2 py-0.5 rounded bg-emerald-950 text-emerald-300 border border-emerald-800">
+              <span className="text-xs font-mono font-bold px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/40">
                 XLSX
               </span>
             </div>
-            <h3 className="font-bold text-base text-slate-100 font-sans">
+            <h3 className="font-bold text-base text-white font-sans">
               Complete Billet Inspection Audit Workbook
             </h3>
-            <p className="text-xs text-slate-400">
+            <p className="text-xs text-white/50 leading-relaxed">
               Generates official 3-sheet Excel spreadsheet with individual billet rows, micro-defect details, and aggregated yield summary statistics.
             </p>
           </div>
@@ -106,26 +105,26 @@ export default function ReportsGeneratorPage() {
           <a
             href={excelUrl}
             download="billet_inspection_audit.xlsx"
-            className="w-full py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg text-xs font-bold text-center flex items-center justify-center gap-2 shadow-lg shadow-emerald-600/20 transition-all"
+            className="w-full py-3 bg-emerald-500/15 hover:bg-emerald-500/25 border border-emerald-500/40 text-emerald-300 rounded-full text-xs font-bold text-center flex items-center justify-center gap-2 shadow-[0_0_15px_rgba(16,185,129,0.2)] font-mono transition-all"
           >
             <Download className="w-4 h-4" />
             <span>Download Audit Excel (.xlsx)</span>
           </a>
-        </div>
+        </GlowCard>
 
         {/* 2. Comprehensive Batch PDF Report */}
-        <div className="bg-slate-900 border border-slate-800 rounded-xl p-6 shadow-sm flex flex-col justify-between space-y-4">
-          <div className="space-y-2">
+        <GlowCard glowColor="rose" className="bg-[#0a0a0a] border-white/10 p-6 flex flex-col justify-between space-y-5">
+          <div className="space-y-2.5">
             <div className="flex items-center justify-between">
-              <FileText className="w-8 h-8 text-cyan-400" />
-              <span className="text-xs font-mono font-bold px-2 py-0.5 rounded bg-cyan-950 text-cyan-300 border border-cyan-800">
+              <FileText className="w-8 h-8 text-[#ED1C27]" />
+              <span className="text-xs font-mono font-bold px-2.5 py-0.5 rounded-full bg-[#ED1C27]/20 text-[#ED1C27] border border-[#ED1C27]/40">
                 PDF
               </span>
             </div>
-            <h3 className="font-bold text-base text-slate-100 font-sans">
+            <h3 className="font-bold text-base text-white font-sans">
               Comprehensive Printable Batch Audit Certificate
             </h3>
-            <p className="text-xs text-slate-400">
+            <p className="text-xs text-white/50 leading-relaxed">
               Official PDF certificate with plant header, KPI yield summary, metallurgical defect tables, and permanent QA audit signatures.
             </p>
           </div>
@@ -134,12 +133,12 @@ export default function ReportsGeneratorPage() {
             href={batchPdfUrl}
             target="_blank"
             rel="noreferrer"
-            className="w-full py-2.5 bg-cyan-600 hover:bg-cyan-500 text-white rounded-lg text-xs font-bold text-center flex items-center justify-center gap-2 shadow-lg shadow-cyan-600/20 transition-all"
+            className="w-full py-3 bg-[#ED1C27] hover:bg-[#ff2a37] text-white rounded-full text-xs font-bold text-center flex items-center justify-center gap-2 shadow-[0_0_20px_rgba(237,28,39,0.4)] font-mono transition-all active:scale-95"
           >
             <Download className="w-4 h-4" />
             <span>Generate Batch PDF Report</span>
           </a>
-        </div>
+        </GlowCard>
       </div>
     </div>
   );

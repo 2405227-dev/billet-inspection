@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import { DefectItem } from "@/lib/types";
 import { SeverityBadge } from "../common/StatusBadge";
 import { getApiUrl } from "@/lib/api";
-import { Bug, ZoomIn, Eye, Sparkles, Layers } from "lucide-react";
+import { Bug, ZoomIn, Eye, Layers } from "lucide-react";
 
 interface DefectMapViewerProps {
   defects: DefectItem[];
@@ -20,73 +20,75 @@ export const DefectMapViewer: React.FC<DefectMapViewerProps> = ({
   );
 
   return (
-    <div className="bg-slate-900 border border-slate-800 rounded-xl p-5 space-y-4">
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          <Bug className="w-4 h-4 text-cyan-400" />
-          <h3 className="font-bold text-sm text-slate-100 uppercase tracking-wider">
-            Surface Defect & Fine-Crack Analysis ({defects?.length || 0})
+    <div className="bg-[#0a0a0a] border border-white/10 rounded-2xl p-6 space-y-5 shadow-2xl backdrop-blur-xl">
+      <div className="flex items-center justify-between border-b border-white/10 pb-4">
+        <div className="flex items-center gap-2.5">
+          <div className="p-1.5 rounded-lg bg-[#ED1C27]/20 border border-[#ED1C27]/50 text-[#ED1C27]">
+            <Bug className="w-4 h-4" />
+          </div>
+          <h3 className="font-bold text-sm text-white uppercase tracking-wider font-mono">
+            Surface Defect & Fine-Crack Segmentation ({defects?.length || 0})
           </h3>
         </div>
-        <div className="text-xs font-mono text-slate-400">
-          Ensemble Seg v3.2.0 • Multi-scale CLAHE
+        <div className="text-xs font-mono text-white/50">
+          Ensemble Seg v3.2 • CLAHE Overlap 256px
         </div>
       </div>
 
       {(!defects || defects.length === 0) ? (
-        <div className="bg-slate-950/60 border border-slate-800 rounded-lg p-6 text-center text-slate-400 font-mono text-xs">
+        <div className="bg-black/60 border border-white/10 rounded-xl p-8 text-center text-white/60 font-mono text-xs">
           ✓ NO SURFACE CRACKS, SEAMS, LAPS, OR FLAKING DEFECTS DETECTED
         </div>
       ) : (
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Defect List Table */}
           <div className="lg:col-span-2 space-y-2 overflow-x-auto">
             <table className="w-full text-left text-xs border-collapse">
               <thead>
-                <tr className="border-b border-slate-800 text-slate-400 font-mono text-[11px] uppercase">
-                  <th className="py-2 px-2.5">ID</th>
-                  <th className="py-2 px-2.5">Class</th>
-                  <th className="py-2 px-2.5">Severity</th>
-                  <th className="py-2 px-2.5">Confidence</th>
-                  <th className="py-2 px-2.5">Length</th>
-                  <th className="py-2 px-2.5">Width</th>
-                  <th className="py-2 px-2.5">Area</th>
-                  <th className="py-2 px-2.5 text-right">Action</th>
+                <tr className="border-b border-white/10 text-white/50 font-mono text-[11px] uppercase">
+                  <th className="py-2.5 px-3">ID</th>
+                  <th className="py-2.5 px-3">Class</th>
+                  <th className="py-2.5 px-3">Severity</th>
+                  <th className="py-2.5 px-3">Confidence</th>
+                  <th className="py-2.5 px-3">Length</th>
+                  <th className="py-2.5 px-3">Width</th>
+                  <th className="py-2.5 px-3">Area</th>
+                  <th className="py-2.5 px-3 text-right">Action</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-800/60 font-mono">
+              <tbody className="divide-y divide-white/5 font-mono">
                 {defects.map((d) => {
                   const isSelected = selectedDefect?.id === d.id;
                   return (
                     <tr
                       key={d.id}
                       onClick={() => setSelectedDefect(d)}
-                      className={`cursor-pointer transition-colors ${
+                      className={`cursor-pointer transition-all ${
                         isSelected
-                          ? "bg-cyan-950/50 text-cyan-200 border-l-2 border-cyan-400"
-                          : "hover:bg-slate-800/40 text-slate-300"
+                          ? "bg-[#ED1C27]/15 text-white border-l-2 border-[#ED1C27]"
+                          : "hover:bg-white/[0.04] text-white/70"
                       }`}
                     >
-                      <td className="py-2.5 px-2.5 font-bold text-slate-200">{d.id}</td>
-                      <td className="py-2.5 px-2.5 capitalize font-sans">
+                      <td className="py-3 px-3 font-bold text-white">{d.id}</td>
+                      <td className="py-3 px-3 capitalize font-sans text-white/90">
                         {d.defect_type.replace(/_/g, " ")}
                       </td>
-                      <td className="py-2.5 px-2.5">
+                      <td className="py-3 px-3">
                         <SeverityBadge severity={d.severity} />
                       </td>
-                      <td className="py-2.5 px-2.5 font-bold text-slate-200">
+                      <td className="py-3 px-3 font-bold text-white">
                         {Math.round(d.confidence * 100)}%
                       </td>
-                      <td className="py-2.5 px-2.5">{d.length_mm} mm</td>
-                      <td className="py-2.5 px-2.5">{d.width_mm} mm</td>
-                      <td className="py-2.5 px-2.5">{d.area_mm2} mm²</td>
-                      <td className="py-2.5 px-2.5 text-right">
+                      <td className="py-3 px-3">{d.length_mm} mm</td>
+                      <td className="py-3 px-3">{d.width_mm} mm</td>
+                      <td className="py-3 px-3">{d.area_mm2} mm²</td>
+                      <td className="py-3 px-3 text-right">
                         <button
                           onClick={(e) => {
                             e.stopPropagation();
                             setSelectedDefect(d);
                           }}
-                          className="px-2 py-0.5 rounded bg-slate-800 hover:bg-slate-700 text-slate-200 text-[10px] font-sans"
+                          className="px-2.5 py-1 rounded-full bg-white/10 hover:bg-[#ED1C27] hover:text-white text-white/80 text-[10px] font-sans transition-all"
                         >
                           Zoom Crop
                         </button>
@@ -99,54 +101,54 @@ export const DefectMapViewer: React.FC<DefectMapViewerProps> = ({
           </div>
 
           {/* Zoomed Defect Evidence Crop Preview Pane */}
-          <div className="bg-slate-950 border border-slate-800 rounded-lg p-3 flex flex-col justify-between">
+          <div className="bg-black/70 border border-white/10 rounded-2xl p-4 flex flex-col justify-between">
             <div>
-              <div className="flex items-center justify-between border-b border-slate-800 pb-2 mb-2">
-                <span className="text-xs font-bold text-slate-300 font-mono">
+              <div className="flex items-center justify-between border-b border-white/10 pb-2.5 mb-3">
+                <span className="text-xs font-bold text-white font-mono">
                   {selectedDefect ? `${selectedDefect.id} HIGH-RES CROP` : "SELECT DEFECT"}
                 </span>
                 {selectedDefect && <SeverityBadge severity={selectedDefect.severity} />}
               </div>
 
               {selectedDefect?.crop_path ? (
-                <div className="aspect-square bg-black rounded-lg overflow-hidden border border-slate-800 flex items-center justify-center relative group">
+                <div className="aspect-square bg-black rounded-xl overflow-hidden border border-white/10 flex items-center justify-center relative group">
                   <img
                     src={getApiUrl(selectedDefect.crop_path)}
                     alt={selectedDefect.defect_type}
                     className="w-full h-full object-contain"
                   />
-                  <div className="absolute top-2 left-2 bg-slate-900/90 px-1.5 py-0.5 rounded text-[10px] font-mono text-cyan-300 border border-slate-700">
+                  <div className="absolute top-2.5 left-2.5 bg-black/90 px-2 py-0.5 rounded-full text-[10px] font-mono text-[#ED1C27] font-bold border border-white/10">
                     OPTICAL ×4 CROP
                   </div>
                 </div>
               ) : (
-                <div className="aspect-square bg-slate-900/40 rounded-lg border border-slate-800 flex items-center justify-center text-slate-500 font-mono text-xs text-center p-4">
+                <div className="aspect-square bg-black/40 rounded-xl border border-white/10 flex items-center justify-center text-white/40 font-mono text-xs text-center p-6">
                   Select a defect to inspect high-resolution sub-millimeter evidence
                 </div>
               )}
             </div>
 
             {selectedDefect && (
-              <div className="pt-3 mt-3 border-t border-slate-800/80 text-[11px] font-mono text-slate-400 space-y-1">
+              <div className="pt-3.5 mt-3 border-t border-white/10 text-[11px] font-mono text-white/50 space-y-1.5">
                 <div className="flex justify-between">
                   <span>Class:</span>
-                  <span className="text-slate-200 capitalize">
+                  <span className="text-white capitalize">
                     {selectedDefect.defect_type.replace(/_/g, " ")}
                   </span>
                 </div>
                 <div className="flex justify-between">
                   <span>Dimensions:</span>
-                  <span className="text-slate-200">
+                  <span className="text-white font-bold">
                     {selectedDefect.length_mm} × {selectedDefect.width_mm} mm
                   </span>
                 </div>
                 <div className="flex justify-between">
                   <span>Surface Area:</span>
-                  <span className="text-slate-200">{selectedDefect.area_mm2} mm²</span>
+                  <span className="text-white">{selectedDefect.area_mm2} mm²</span>
                 </div>
                 <div className="flex justify-between">
                   <span>Orientation:</span>
-                  <span className="text-slate-200">{selectedDefect.orientation_deg || 0}°</span>
+                  <span className="text-white">{selectedDefect.orientation_deg || 0}°</span>
                 </div>
               </div>
             )}
