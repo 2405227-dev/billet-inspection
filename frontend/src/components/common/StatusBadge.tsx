@@ -15,8 +15,8 @@ export const StatusBadge: React.FC<StatusBadgeProps> = ({
 }) => {
   const normalized = (status || "").toUpperCase();
 
-  let bg = "bg-white/[0.04] text-white/70 border-white/10";
-  let dot = "bg-white/40";
+  let bg = "bg-white/[0.04] text-slate-400 border-white/10";
+  let dot = "bg-slate-400";
   let icon = <HelpCircle className="w-3 h-3" />;
   let label = normalized || "UNKNOWN";
 
@@ -35,7 +35,12 @@ export const StatusBadge: React.FC<StatusBadgeProps> = ({
     dot = "bg-amber-400";
     icon = <AlertTriangle className="w-3 h-3 text-amber-400" />;
     label = "REWORK";
-  } else if (normalized === "NEEDS_REVIEW" || normalized === "REVIEW_REQUIRED" || normalized === "PENDING" || normalized === "REVIEW") {
+  } else if (
+    normalized === "NEEDS_REVIEW" ||
+    normalized === "REVIEW_REQUIRED" ||
+    normalized === "PENDING" ||
+    normalized === "REVIEW"
+  ) {
     bg = "bg-yellow-500/10 text-yellow-300 border-yellow-500/30";
     dot = "bg-yellow-400";
     icon = <HelpCircle className="w-3 h-3 text-yellow-300" />;
@@ -44,13 +49,13 @@ export const StatusBadge: React.FC<StatusBadgeProps> = ({
 
   const sizeClasses = {
     sm: "px-2 py-0.5 text-[10px] gap-1 rounded",
-    md: "px-2.5 py-1 text-[11px] gap-1.5 rounded-md",
-    lg: "px-3.5 py-1.5 text-xs gap-2 rounded-lg",
+    md: "px-2.5 py-0.5 text-[11px] gap-1.5 rounded",
+    lg: "px-3 py-1 text-xs gap-1.5 rounded-md",
   }[size];
 
   return (
     <span
-      className={`inline-flex items-center font-mono font-bold tracking-wider uppercase border transition-colors ${sizeClasses} ${bg}`}
+      className={`inline-flex items-center font-mono font-bold tracking-wider uppercase border ${sizeClasses} ${bg}`}
     >
       <span className={`w-1.5 h-1.5 rounded-full ${dot} shrink-0`} />
       <span>{label}</span>
@@ -60,8 +65,8 @@ export const StatusBadge: React.FC<StatusBadgeProps> = ({
 
 export const SeverityBadge: React.FC<{ severity: DefectSeverity | string }> = ({ severity }) => {
   const sev = (severity || "").toUpperCase();
-  let color = "bg-white/[0.04] text-white/60 border-white/10";
-  let dot = "bg-white/40";
+  let color = "bg-white/[0.04] text-slate-400 border-white/10";
+  let dot = "bg-slate-400";
 
   if (sev === "CRITICAL") {
     color = "bg-[#ED1C27]/15 text-[#ff4b55] border-[#ED1C27]/40";
@@ -78,9 +83,10 @@ export const SeverityBadge: React.FC<{ severity: DefectSeverity | string }> = ({
   }
 
   return (
-    <span className={`inline-flex items-center gap-1.5 px-2 py-0.5 rounded text-[10px] font-mono font-semibold border tracking-wide uppercase ${color}`}>
-      <span className={`w-1 h-1 rounded-full ${dot}`} />
+    <span className={`inline-flex items-center gap-1.5 px-2 py-0.5 rounded text-[10px] font-mono font-bold border tracking-wider uppercase ${color}`}>
+      <span className={`w-1.5 h-1.5 rounded-full ${dot} shrink-0`} />
       <span>{sev}</span>
     </span>
   );
 };
+

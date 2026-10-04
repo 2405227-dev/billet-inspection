@@ -9,7 +9,6 @@ import { StatusBadge } from "@/components/common/StatusBadge";
 import { DimensionalTable } from "@/components/inspection/DimensionalTable";
 import { DefectMapViewer } from "@/components/inspection/DefectMapViewer";
 import { OperatorReviewModal } from "@/components/inspection/OperatorReviewModal";
-import { IndustrialHeroBackground } from "@/components/ui/IndustrialHeroBackground";
 import {
   FileText,
   ShieldCheck,
@@ -21,9 +20,7 @@ import {
   Radio,
   Copy,
   Check,
-  FileSpreadsheet,
   AlertCircle,
-  ExternalLink,
 } from "lucide-react";
 
 export default function InspectionDetailPage() {
@@ -63,8 +60,8 @@ export default function InspectionDetailPage() {
   if (loading) {
     return (
       <div className="py-24 text-center space-y-3">
-        <RefreshCw className="w-7 h-7 animate-spin text-[#ED1C27] mx-auto" />
-        <div className="text-xs font-mono text-white/50">
+        <RefreshCw className="w-6 h-6 animate-spin text-[#ED1C27] mx-auto" />
+        <div className="text-xs font-mono text-slate-500">
           Loading permanent cryptographic inspection record {id}...
         </div>
       </div>
@@ -73,13 +70,13 @@ export default function InspectionDetailPage() {
 
   if (error || !inspection) {
     return (
-      <div className="industrial-panel p-8 max-w-lg mx-auto text-center space-y-4">
-        <AlertCircle className="w-9 h-9 text-[#ED1C27] mx-auto" />
+      <div className="bg-[#0c0e14] border border-white/[0.08] rounded-lg p-8 max-w-lg mx-auto text-center space-y-4">
+        <AlertCircle className="w-8 h-8 text-[#ED1C27] mx-auto" />
         <h2 className="text-base font-bold text-white">Inspection Record Not Found</h2>
-        <p className="text-xs text-white/50 font-mono">{error}</p>
+        <p className="text-xs text-slate-500 font-mono">{error}</p>
         <Link
           href="/inspections"
-          className="inline-flex items-center gap-1.5 px-4 py-2 bg-[#ED1C27] text-white rounded-lg text-xs font-mono font-bold"
+          className="inline-flex items-center gap-1.5 px-4 py-2 bg-[#ED1C27] hover:bg-[#ff2a37] text-white rounded text-xs font-mono font-bold transition-colors"
         >
           <ArrowLeft className="w-3.5 h-3.5" />
           <span>Back to Registry</span>
@@ -93,58 +90,54 @@ export default function InspectionDetailPage() {
   const ocrCropUrl = inspection.ocr_crop_reference ? getApiUrl(inspection.ocr_crop_reference) : null;
 
   return (
-    <div className="space-y-6 max-w-6xl mx-auto">
-      {/* Top Header Banner with Industrial Steel Backdrop */}
-      <IndustrialHeroBackground
-        imageSrc="/images/industrial/hot-steel-billet.jpg"
-        accent="red"
-        className="p-6 sm:p-8"
-      >
-        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
-          <div className="space-y-3">
-            <div className="flex items-center gap-2.5">
+    <div className="space-y-5 max-w-6xl mx-auto">
+      {/* Top Header Banner */}
+      <div className="bg-[#0c0e14] border border-white/[0.08] rounded-lg p-5 sm:p-6">
+        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-5">
+          <div className="space-y-2">
+            <div className="flex items-center gap-2">
               <Link
                 href="/inspections"
-                className="p-1.5 rounded bg-white/[0.04] hover:bg-white/[0.08] text-white/70 hover:text-white border border-white/10 transition-colors"
+                className="p-1 rounded bg-white/[0.04] hover:bg-white/[0.08] text-slate-400 hover:text-white border border-white/10 transition-colors"
                 title="Back to All Billets"
               >
-                <ArrowLeft className="w-4 h-4" />
+                <ArrowLeft className="w-3.5 h-3.5" />
               </Link>
-              <span className="text-xs font-mono text-white/50">INSPECTION RECORD:</span>
-              <span className="font-bold text-sm text-[#ED1C27] font-mono">
+              <span className="text-[10px] font-mono text-slate-500 uppercase tracking-wider">RECORD:</span>
+              <span className="font-bold text-xs text-[#ED1C27] font-mono">
                 {inspection.id}
               </span>
             </div>
 
             <div className="flex flex-wrap items-center gap-3">
-              <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-white font-mono">
+              <h1 className="text-xl sm:text-2xl font-extrabold tracking-tight text-white font-mono">
                 {inspection.billet_id}
               </h1>
               <StatusBadge status={inspection.status} size="lg" />
               {inspection.operator_override && (
-                <span className="px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-amber-500/20 text-amber-300 border border-amber-500/40">
+                <span className="px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-amber-500/15 text-amber-300 border border-amber-500/30">
                   OVERRIDDEN BY {inspection.operator_id || "OPERATOR"}
                 </span>
               )}
             </div>
 
-            <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs font-mono text-white/60">
+            <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs font-mono text-slate-400">
               <div>HEAT: <span className="text-white font-bold">{inspection.heat_number}</span></div>
-              <span className="text-white/20">·</span>
-              <div>BATCH: <span className="text-white font-bold">{inspection.batch_id}</span></div>
-              <span className="text-white/20">·</span>
-              <div>INSPECTED: <span className="text-white font-bold">{new Date(inspection.timestamp).toLocaleTimeString([], { hour12: false })}</span></div>
-              <span className="text-white/20">·</span>
-              <div>LATENCY: <span className="text-white font-bold">{inspection.processing_latency_ms} ms</span></div>
+              <span className="text-slate-600">/</span>
+              <div>BATCH: <span className="text-slate-200">{inspection.batch_id}</span></div>
+              <span className="text-slate-600">/</span>
+              <div>TIME: <span className="text-slate-200">{new Date(inspection.timestamp).toLocaleTimeString([], { hour12: false })}</span></div>
+              <span className="text-slate-600">/</span>
+              <div>LATENCY: <span className="text-slate-200">{inspection.processing_latency_ms} ms</span></div>
             </div>
           </div>
 
-          <div className="flex flex-wrap items-center gap-2.5 shrink-0">
+          <div className="flex flex-wrap items-center gap-2 shrink-0">
             <button
               onClick={() => setShowReviewModal(true)}
-              className="flex items-center gap-1.5 px-3.5 py-2 rounded-lg bg-white/[0.04] hover:bg-white/[0.08] text-white border border-white/10 text-xs font-mono font-semibold transition-colors"
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded bg-white/[0.04] hover:bg-white/[0.08] text-slate-200 border border-white/10 text-xs font-mono font-semibold transition-colors cursor-pointer"
             >
-              <UserCheck className="w-4 h-4 text-amber-400" />
+              <UserCheck className="w-3.5 h-3.5 text-amber-400" />
               <span>Operator Override</span>
             </button>
 
@@ -152,72 +145,72 @@ export default function InspectionDetailPage() {
               href={pdfDownloadUrl}
               target="_blank"
               rel="noreferrer"
-              className="flex items-center gap-1.5 px-4 py-2 rounded-lg bg-[#ED1C27] hover:bg-[#ff2a37] text-white text-xs font-mono font-bold transition-all shadow-[0_0_15px_rgba(237,28,39,0.3)]"
+              className="flex items-center gap-1.5 px-3.5 py-1.5 rounded bg-[#ED1C27] hover:bg-[#ff2a37] text-white text-xs font-mono font-bold transition-colors cursor-pointer"
             >
-              <FileText className="w-4 h-4" />
-              <span>Export PDF Certificate</span>
+              <FileText className="w-3.5 h-3.5" />
+              <span>PDF Certificate</span>
             </a>
           </div>
         </div>
-      </IndustrialHeroBackground>
+      </div>
 
       {/* Decision Summary Reason Banner */}
-      <div className="industrial-panel p-4 flex items-start gap-3 text-xs font-mono">
-        <span className="text-white/40 shrink-0 uppercase">DECISION RATIONALE:</span>
-        <span className="text-white/90 font-medium">{inspection.decision_reason}</span>
+      <div className="bg-[#0c0e14] border border-white/[0.08] rounded-lg p-3.5 flex items-start gap-2.5 text-xs font-mono">
+        <span className="text-slate-500 shrink-0 uppercase text-[10px]">DECISION RATIONALE:</span>
+        <span className="text-slate-200 font-medium text-[11px]">{inspection.decision_reason}</span>
       </div>
 
       {/* 1. Identification & Visual Evidence Grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-5">
         {/* Left 5 Cols: Traceability Data */}
-        <div className="lg:col-span-5 industrial-panel p-5 space-y-4">
-          <div className="flex items-center gap-2 border-b border-white/[0.08] pb-3">
-            <Scan className="w-4 h-4 text-[#ED1C27]" />
-            <h3 className="font-semibold text-xs text-white uppercase tracking-wider font-mono">
+        <div className="lg:col-span-5 bg-[#0c0e14] border border-white/[0.08] rounded-lg p-4 space-y-3.5">
+          <div className="flex items-center gap-2 border-b border-white/[0.08] pb-2.5">
+            <Scan className="w-3.5 h-3.5 text-slate-400" />
+            <h3 className="font-bold text-xs text-white uppercase tracking-wider font-mono">
               Traceability & Identification
             </h3>
           </div>
 
-          <div className="space-y-2.5 text-xs font-mono">
+          <div className="space-y-2 text-xs font-mono">
             <div className="flex justify-between py-1 border-b border-white/[0.04]">
-              <span className="text-white/40">Billet Serial:</span>
+              <span className="text-slate-500">Billet Serial:</span>
               <span className="font-bold text-white">{inspection.billet_id}</span>
             </div>
             <div className="flex justify-between py-1 border-b border-white/[0.04]">
-              <span className="text-white/40">Heat Number:</span>
+              <span className="text-slate-500">Heat Number:</span>
               <span className="font-bold text-[#ED1C27]">{inspection.heat_number}</span>
             </div>
             <div className="flex justify-between py-1 border-b border-white/[0.04]">
-              <span className="text-white/40">Batch ID:</span>
-              <span className="text-white">{inspection.batch_id}</span>
+              <span className="text-slate-500">Batch ID:</span>
+              <span className="text-slate-200">{inspection.batch_id}</span>
             </div>
             <div className="flex justify-between py-1 border-b border-white/[0.04]">
-              <span className="text-white/40">Steel Grade:</span>
-              <span className="text-white">IS 2830 / Fe 500D</span>
+              <span className="text-slate-500">Steel Grade:</span>
+              <span className="text-slate-200">IS 2830 / Fe 500D</span>
             </div>
             <div className="flex justify-between py-1 border-b border-white/[0.04]">
-              <span className="text-white/40">End-Face OCR:</span>
+              <span className="text-slate-500">End-Face OCR:</span>
               <span className="text-white font-bold">{inspection.ocr_text || "N/A"}</span>
             </div>
             <div className="flex justify-between py-1 border-b border-white/[0.04]">
-              <span className="text-white/40">OCR Confidence:</span>
+              <span className="text-slate-500">OCR Confidence:</span>
               <span className="text-emerald-400 font-semibold">
                 {Math.round((inspection.ocr_confidence || 0) * 100)}%
               </span>
             </div>
             <div className="flex justify-between py-1 border-b border-white/[0.04]">
-              <span className="text-white/40">2D Barcode:</span>
-              <span className="text-white">{inspection.barcode_value || "N/A"}</span>
+              <span className="text-slate-500">2D Barcode:</span>
+              <span className="text-slate-300">{inspection.barcode_value || "N/A"}</span>
             </div>
           </div>
 
           {/* OCR End-Face Crop Reference */}
           {ocrCropUrl && (
             <div className="pt-2">
-              <div className="text-[10px] font-mono text-white/40 uppercase mb-2">
+              <div className="text-[9px] font-mono text-slate-500 uppercase tracking-wider mb-1.5">
                 End-Face Marking Crop Evidence
               </div>
-              <div className="h-20 bg-black/60 rounded-lg overflow-hidden border border-white/10 flex items-center justify-center">
+              <div className="h-20 bg-black/60 rounded border border-white/10 flex items-center justify-center overflow-hidden">
                 <img
                   src={ocrCropUrl}
                   alt="OCR Crop"
@@ -229,18 +222,18 @@ export default function InspectionDetailPage() {
         </div>
 
         {/* Right 7 Cols: Full Billet Evidence Image */}
-        <div className="lg:col-span-7 industrial-panel p-5 space-y-4">
-          <div className="flex items-center justify-between border-b border-white/[0.08] pb-3">
+        <div className="lg:col-span-7 bg-[#0c0e14] border border-white/[0.08] rounded-lg p-4 space-y-3.5">
+          <div className="flex items-center justify-between border-b border-white/[0.08] pb-2.5">
             <div className="flex items-center gap-2">
-              <Layers className="w-4 h-4 text-[#ED1C27]" />
-              <h3 className="font-semibold text-xs text-white uppercase tracking-wider font-mono">
-                Full-Surface Visual Evidence & Overlays
+              <Layers className="w-3.5 h-3.5 text-slate-400" />
+              <h3 className="font-bold text-xs text-white uppercase tracking-wider font-mono">
+                Full-Surface Visual Evidence
               </h3>
             </div>
-            <span className="text-[10px] font-mono text-white/40">Calibrated Multi-Camera Composite</span>
+            <span className="text-[10px] font-mono text-slate-500">Composite Matrix</span>
           </div>
 
-          <div className="aspect-video bg-black/60 rounded-lg overflow-hidden border border-white/10 flex items-center justify-center relative">
+          <div className="aspect-video bg-black rounded overflow-hidden border border-white/10 flex items-center justify-center relative">
             {evidenceImageUrl ? (
               <img
                 src={evidenceImageUrl}
@@ -248,7 +241,7 @@ export default function InspectionDetailPage() {
                 className="w-full h-full object-contain"
               />
             ) : (
-              <div className="text-xs text-white/40 font-mono">No evidence image recorded</div>
+              <div className="text-xs text-slate-500 font-mono">No evidence image recorded</div>
             )}
           </div>
         </div>
@@ -270,32 +263,32 @@ export default function InspectionDetailPage() {
       />
 
       {/* 4. Multi-Sensor NDT & Cryptographic Audit Block */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
         {/* NDT Sensor Fusion */}
-        <div className="industrial-panel p-5 space-y-3">
-          <div className="flex items-center justify-between border-b border-white/[0.08] pb-3">
+        <div className="bg-[#0c0e14] border border-white/[0.08] rounded-lg p-4 space-y-3">
+          <div className="flex items-center justify-between border-b border-white/[0.08] pb-2.5">
             <div className="flex items-center gap-2">
-              <Radio className="w-4 h-4 text-[#ED1C27]" />
-              <h3 className="font-semibold text-xs text-white uppercase tracking-wider font-mono">
+              <Radio className="w-3.5 h-3.5 text-slate-400" />
+              <h3 className="font-bold text-xs text-white uppercase tracking-wider font-mono">
                 Multi-Sensor NDT Subsurface Fusion
               </h3>
             </div>
             <span className="text-[10px] font-mono text-emerald-400 font-semibold">CONCORDANT</span>
           </div>
 
-          <div className="space-y-2 text-xs font-mono text-white/80">
-            <div className="p-3 bg-black/40 rounded-lg border border-white/[0.06] flex justify-between items-center">
+          <div className="space-y-2 text-xs font-mono text-slate-300">
+            <div className="p-2.5 bg-[#07080b] rounded border border-white/[0.06] flex justify-between items-center">
               <div>
-                <div className="font-bold text-white">Eddy Current Array (ECA)</div>
-                <div className="text-[10px] text-white/40">Surface-breaking sub-scale micro-flaws</div>
+                <div className="font-bold text-white font-sans text-xs">Eddy Current Array (ECA)</div>
+                <div className="text-[10px] text-slate-500">Surface-breaking sub-scale micro-flaws</div>
               </div>
               <span className="text-emerald-400 font-semibold text-xs">NORMAL (45 mV)</span>
             </div>
 
-            <div className="p-3 bg-black/40 rounded-lg border border-white/[0.06] flex justify-between items-center">
+            <div className="p-2.5 bg-[#07080b] rounded border border-white/[0.06] flex justify-between items-center">
               <div>
-                <div className="font-bold text-white">Phased Array Ultrasonic (PAUT)</div>
-                <div className="text-[10px] text-white/40">Core porosity & central pipe integrity</div>
+                <div className="font-bold text-white font-sans text-xs">Phased Array Ultrasonic (PAUT)</div>
+                <div className="text-[10px] text-slate-500">Core porosity & central pipe integrity</div>
               </div>
               <span className="text-emerald-400 font-semibold text-xs">NORMAL (1.8 dB)</span>
             </div>
@@ -303,11 +296,11 @@ export default function InspectionDetailPage() {
         </div>
 
         {/* Cryptographic SHA-256 Audit Trail */}
-        <div className="industrial-panel p-5 space-y-3">
-          <div className="flex items-center justify-between border-b border-white/[0.08] pb-3">
+        <div className="bg-[#0c0e14] border border-white/[0.08] rounded-lg p-4 space-y-3">
+          <div className="flex items-center justify-between border-b border-white/[0.08] pb-2.5">
             <div className="flex items-center gap-2">
-              <ShieldCheck className="w-4 h-4 text-emerald-400" />
-              <h3 className="font-semibold text-xs text-white uppercase tracking-wider font-mono">
+              <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
+              <h3 className="font-bold text-xs text-white uppercase tracking-wider font-mono">
                 Cryptographic Audit Ledger Block
               </h3>
             </div>
@@ -316,31 +309,31 @@ export default function InspectionDetailPage() {
             </span>
           </div>
 
-          <div className="space-y-2.5 text-[11px] font-mono text-white/50">
+          <div className="space-y-2 text-[11px] font-mono text-slate-400">
             <div>
-              <div className="flex items-center justify-between text-white/40 mb-1">
+              <div className="flex items-center justify-between text-slate-500 mb-1">
                 <span>Record Block Hash:</span>
                 <button
                   onClick={() => handleCopyHash(inspection.audit_hash)}
-                  className="hover:text-white flex items-center gap-1 text-[10px] transition-colors"
+                  className="hover:text-white flex items-center gap-1 text-[10px] transition-colors cursor-pointer"
                 >
                   {copiedHash ? <Check className="w-3 h-3 text-emerald-400" /> : <Copy className="w-3 h-3" />}
                   <span>{copiedHash ? "Copied" : "Copy"}</span>
                 </button>
               </div>
-              <div className="bg-black/60 p-2.5 rounded-lg border border-white/10 text-white/90 font-mono break-all select-all">
+              <div className="bg-[#07080b] p-2 rounded border border-white/10 text-slate-200 font-mono break-all select-all text-[10px]">
                 {inspection.audit_hash}
               </div>
             </div>
 
             <div>
-              <div className="text-white/40 mb-1">Previous Chained Hash:</div>
-              <div className="bg-black/60 p-2.5 rounded-lg border border-white/10 text-white/40 font-mono break-all select-all">
+              <div className="text-slate-500 mb-1">Previous Chained Hash:</div>
+              <div className="bg-[#07080b] p-2 rounded border border-white/10 text-slate-500 font-mono break-all select-all text-[10px]">
                 {inspection.previous_audit_hash}
               </div>
             </div>
 
-            <div className="pt-2 flex justify-between text-[10px] text-white/40 border-t border-white/[0.06]">
+            <div className="pt-1.5 flex justify-between text-[10px] text-slate-500 border-t border-white/[0.06]">
               <span>Inference Engine: {inspection.model_version}</span>
               <span>Rig Calibration: {inspection.calibration_version}</span>
             </div>

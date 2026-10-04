@@ -153,3 +153,37 @@ def test_exports_and_reports(setup_db):
     generate_batch_audit_pdf(sample_records, batch_pdf_path)
     assert batch_pdf_path.exists()
     assert batch_pdf_path.stat().st_size > 0
+
+def test_canonical_paut_indication_event():
+    from backend.hardware.adapters.demo_paut import paut_service
+    
+    # Acquire volumetric slice with flaw injection
+    billet_id = "BILLET-TEST-7788"
+    pos = 4200.0
+    flaw_depth = 75.0
+    
+    slice_data = paut_service.acquire_volumetric_slice(
+        encoder_pos_mm=pos,
+        inject_internal_flaw_at_mm=pos,
+        flaw_depth_mm=flaw_depth,
+        billet_id=billet_id,
+    )
+    
+    # Must contain canonical paut_indication object
+    assert "paut_indication" in slice_data
+    ind = slice_data["paut_indication"]
+    
+    # Assert all required canonical schema keys
+    assert ind["billet_id"] == billet_id
+    assert ind["encoder_position_mm"] == pos
+    assert ind["depth_mm"] == flaw_depth
+    assert isinstance(ind["amplitude"], float)
+    assert ind["amplitude"] >= 40.0 # Rejection threshold
+    assert ind["channel"] == 32
+    assert isinstance(ind["timestamp"], float)
+    
+    # Assert derived A-scan reflections derive from this EXACT object without random deviation
+    a_scans = slice_data["a_scan_samples"]
+    internal_echo = next(s for s in a_scans if s["label"] == "INTERNAL_INDICATION")
+    assert internal_echo["depth_mm"] == ind["depth_mm"]
+    assert internal_echo["amplitude_pct"] == ind["amplitude"]

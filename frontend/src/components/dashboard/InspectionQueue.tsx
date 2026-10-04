@@ -4,7 +4,7 @@ import React from "react";
 import Link from "next/link";
 import { InspectionSummary } from "@/lib/types";
 import { StatusBadge } from "@/components/common/StatusBadge";
-import { ArrowRight, Clock } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 
 interface QueueProps {
   inspections: InspectionSummary[];
@@ -12,16 +12,16 @@ interface QueueProps {
 
 export const InspectionQueue: React.FC<QueueProps> = ({ inspections }) => {
   return (
-    <div className="bg-[#0c0e14] border border-white/[0.08] rounded-xl p-5 flex flex-col justify-between shadow-lg h-full">
+    <div className="bg-[#0c0e14] border border-white/[0.08] rounded-lg p-4 sm:p-5 flex flex-col justify-between h-full">
       <div>
         <div className="flex items-center justify-between border-b border-white/[0.08] pb-3 mb-3">
           <div className="flex items-center gap-2">
-            <span className="w-2 h-2 rounded-full bg-[#ED1C27]" />
+            <span className="w-1.5 h-1.5 rounded-full bg-[#ED1C27]" />
             <h3 className="font-bold text-xs text-white uppercase tracking-wider font-mono">
               INSPECTION QUEUE
             </h3>
             <span className="text-[10px] text-slate-500 font-mono">
-              LIVE · {inspections.length} BILLETS
+              ({inspections.length} RECENT)
             </span>
           </div>
           <Link
@@ -36,7 +36,7 @@ export const InspectionQueue: React.FC<QueueProps> = ({ inspections }) => {
         <div className="divide-y divide-white/[0.04]">
           {inspections.length === 0 ? (
             <div className="text-center py-10 text-xs font-mono text-slate-500">
-              Awaiting next billet stream on conveyor.
+              Awaiting next billet stream from conveyor encoder.
             </div>
           ) : (
             inspections.map((ins) => (
@@ -47,7 +47,7 @@ export const InspectionQueue: React.FC<QueueProps> = ({ inspections }) => {
               >
                 <div className="space-y-0.5">
                   <div className="flex items-center gap-2">
-                    <span className="font-bold text-slate-200 group-hover:text-white transition-colors">
+                    <span className="font-bold text-slate-200 group-hover:text-[#ED1C27] transition-colors">
                       {ins.billet_id}
                     </span>
                     <span className="text-[10px] text-slate-500">
@@ -59,9 +59,9 @@ export const InspectionQueue: React.FC<QueueProps> = ({ inspections }) => {
                   </div>
                 </div>
 
-                <div className="flex items-center gap-3">
+                <div className="flex items-center gap-2.5">
                   <span className="text-[10px] text-slate-500">
-                    {new Date(ins.timestamp).toLocaleTimeString()}
+                    {new Date(ins.timestamp).toLocaleTimeString([], { hour12: false })}
                   </span>
                   <StatusBadge status={ins.status} size="sm" />
                 </div>
@@ -71,10 +71,11 @@ export const InspectionQueue: React.FC<QueueProps> = ({ inspections }) => {
         </div>
       </div>
 
-      <div className="pt-3 mt-2 border-t border-white/[0.06] flex items-center justify-between text-[10px] font-mono text-slate-500">
-        <span>ALL RECORDS COMMITTED TO SQLITE</span>
-        <span className="text-emerald-400">SHA-256 LINKED</span>
+      <div className="pt-3 mt-3 border-t border-white/[0.06] flex items-center justify-between text-[10px] font-mono text-slate-500">
+        <span>STORAGE: SQLITE WAL</span>
+        <span className="text-emerald-400">SHA-256 LEDGER LINKED</span>
       </div>
     </div>
   );
 };
+

@@ -53,30 +53,30 @@ export const DimensionalTable: React.FC<DimensionalTableProps> = ({
   ];
 
   return (
-    <div className="industrial-panel p-5 space-y-4">
-      <div className="flex items-center justify-between border-b border-white/[0.08] pb-3.5">
+    <div className="bg-[#0c0e14] border border-white/[0.08] rounded-lg p-4 sm:p-5 space-y-3.5">
+      <div className="flex items-center justify-between border-b border-white/[0.08] pb-3">
         <div className="flex items-center gap-2">
-          <Ruler className="w-4 h-4 text-[#ED1C27]" />
-          <h3 className="font-semibold text-xs text-white uppercase tracking-wider font-mono">
-            Calibrated Dimensional Metrology & Tolerances
+          <Ruler className="w-3.5 h-3.5 text-slate-400" />
+          <h3 className="font-bold text-xs text-white uppercase tracking-wider font-mono">
+            Calibrated Dimensional Metrology (IS 2830)
           </h3>
         </div>
-        <div className="text-[11px] font-mono text-white/50">
-          Target Accuracy: <span className="text-emerald-400 font-semibold">&le; &plusmn;1.0%</span>
+        <div className="text-[10px] font-mono text-slate-400">
+          Tolerance Gate: <span className="text-emerald-400 font-bold">&le; &plusmn;1.0%</span>
         </div>
       </div>
 
       <div className="overflow-x-auto">
         <table className="w-full text-left text-xs border-collapse">
           <thead>
-            <tr className="border-b border-white/[0.08] text-white/40 font-mono text-[10px] uppercase tracking-wider">
-              <th className="py-2.5 px-3">Parameter</th>
-              <th className="py-2.5 px-3">Measured</th>
-              <th className="py-2.5 px-3">Nominal</th>
-              <th className="py-2.5 px-3">Tolerance Envelope</th>
-              <th className="py-2.5 px-3">Deviation</th>
-              <th className="py-2.5 px-3">Tolerance Bar</th>
-              <th className="py-2.5 px-3 text-right">Verdict</th>
+            <tr className="border-b border-white/[0.08] text-slate-400 font-mono text-[9px] uppercase tracking-wider">
+              <th className="py-2 px-3">Parameter</th>
+              <th className="py-2 px-3">Measured</th>
+              <th className="py-2 px-3">Nominal</th>
+              <th className="py-2 px-3">Acceptance Range</th>
+              <th className="py-2 px-3">Deviation</th>
+              <th className="py-2 px-3">Tolerance Offset</th>
+              <th className="py-2 px-3 text-right">Verdict</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-white/[0.04] font-mono">
@@ -87,29 +87,29 @@ export const DimensionalTable: React.FC<DimensionalTableProps> = ({
 
               return (
                 <tr key={idx} className="hover:bg-white/[0.02] transition-colors">
-                  <td className="py-3 px-3 font-sans font-medium text-white">
+                  <td className="py-2.5 px-3 font-sans font-medium text-white">
                     {dim.dimension_name}
                   </td>
-                  <td className="py-3 px-3 text-white font-bold">
-                    {dim.measured_value_mm} <span className="text-[10px] text-white/40 font-normal">mm</span>
+                  <td className="py-2.5 px-3 text-white font-bold">
+                    {dim.measured_value_mm} <span className="text-[10px] text-slate-500 font-normal">mm</span>
                   </td>
-                  <td className="py-3 px-3 text-white/50">
+                  <td className="py-2.5 px-3 text-slate-400">
                     {dim.nominal_mm} mm
                   </td>
-                  <td className="py-3 px-3 text-white/60">
+                  <td className="py-2.5 px-3 text-slate-400">
                     [{dim.expected_min_mm} – {dim.expected_max_mm} mm]
                   </td>
-                  <td className="py-3 px-3">
+                  <td className="py-2.5 px-3">
                     <span
                       className={`font-semibold ${
-                        isPass ? "text-white" : "text-[#ff4b55]"
+                        isPass ? "text-slate-200" : "text-[#ff4b55]"
                       }`}
                     >
                       {dim.deviation_pct > 0 ? `+${dim.deviation_pct}` : dim.deviation_pct}%
                     </span>
                   </td>
-                  <td className="py-3 px-3 w-36">
-                    <div className="w-full bg-black/80 rounded-full h-1.5 overflow-hidden border border-white/10 flex items-center">
+                  <td className="py-2.5 px-3 w-32">
+                    <div className="w-full bg-[#07080b] rounded-full h-1 overflow-hidden border border-white/10 flex items-center">
                       <div
                         className={`h-full rounded-full ${
                           isPass ? "bg-emerald-400" : "bg-[#ED1C27]"
@@ -118,7 +118,7 @@ export const DimensionalTable: React.FC<DimensionalTableProps> = ({
                       />
                     </div>
                   </td>
-                  <td className="py-3 px-3 text-right">
+                  <td className="py-2.5 px-3 text-right">
                     <span
                       className={`inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-bold border ${
                         isPass
@@ -143,3 +143,4 @@ export const DimensionalTable: React.FC<DimensionalTableProps> = ({
 function roundPct(val: number): number {
   return Math.round(val * 100) / 100;
 }
+

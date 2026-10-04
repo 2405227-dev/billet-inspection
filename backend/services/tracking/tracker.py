@@ -61,11 +61,12 @@ class BilletTracker:
         self.inspection_counter = 1
 
     def generate_inspection_id(self) -> str:
-        # Format: INS-YYYY-NNNNNN
+        # Format: INS-YYYY-NNNNNN (unique millisecond timestamp + monotonic counter suffix)
         year = time.strftime("%Y")
-        ins_id = f"INS-{year}-{self.inspection_counter:06d}"
+        cnt = self.inspection_counter
         self.inspection_counter += 1
-        return ins_id
+        unique_suffix = f"{(int(time.time() * 1000) + cnt) % 900000 + 100000:06d}"
+        return f"INS-{year}-{unique_suffix}"
 
     def register_or_get_billet(
         self,
@@ -81,25 +82,24 @@ class BilletTracker:
         """
         # 1. Search active sessions
         for session in self.active_sessions.values():
-            if session.billet_id == billet_id and not session.is_completed:
+            if session.billet_id == billet_id:
                 session.associated_frame_ids.append(frame_idx)
                 return session
 
-        # 2. Check if recently completed
+        # 2. Search recently completed sessions within sliding window
         if billet_id in self.completed_billet_ids:
-            # Re-identification of exiting billet: Return completed record without re-inspecting
-            logger.info(f"Billet {billet_id} already inspected in current conveyor pass. Preventing duplicate.")
-            # Return dummy completed session
-            session = TrackedBilletSession(
-                session_id=f"DUPLICATE_GUARD_{uuid.uuid4().hex[:8]}",
+            # Return a session marked as completed to prevent duplicate re-inspection
+            dummy_session = TrackedBilletSession(
+                session_id=f"TRACK-COMPLETED-{billet_id}",
                 billet_id=billet_id,
                 heat_number=heat_number,
                 batch_id=batch_id,
                 conveyor_entry_time=time.time(),
+                initial_position_mm=self.conveyor_inspection_zone_length_mm,
             )
-            session.state = BilletState.COMPLETED
-            session.is_completed = True
-            return session
+            dummy_session.is_completed = True
+            dummy_session.state = BilletState.COMPLETED
+            return dummy_session
 
         # 3. Create fresh tracking session
         session_id = f"TRACK-{uuid.uuid4().hex[:8].upper()}"

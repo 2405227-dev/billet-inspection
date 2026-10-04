@@ -53,66 +53,66 @@ export const OperatorReviewModal: React.FC<OperatorReviewModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 bg-black/85 backdrop-blur-md flex items-center justify-center p-4">
-      <div className="bg-[#0a0a0a] border border-white/15 rounded-3xl max-w-lg w-full p-6 sm:p-7 shadow-2xl space-y-5 animate-in fade-in zoom-in-95 duration-200">
-        <div className="flex items-center justify-between border-b border-white/10 pb-4">
-          <div className="flex items-center gap-3">
-            <div className="p-2.5 rounded-2xl bg-[#ED1C27]/20 text-[#ED1C27] border border-[#ED1C27]/40">
-              <UserCheck className="w-5 h-5" />
+    <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
+      <div className="bg-[#0c0e14] border border-white/[0.12] rounded-lg max-w-lg w-full p-5 sm:p-6 shadow-2xl space-y-4 font-mono text-xs">
+        <div className="flex items-center justify-between border-b border-white/[0.08] pb-3">
+          <div className="flex items-center gap-2.5">
+            <div className="p-1.5 rounded bg-white/[0.06] text-slate-300 border border-white/10">
+              <UserCheck className="w-4 h-4" />
             </div>
             <div>
-              <h3 className="font-bold text-base text-white">
-                Human-in-the-Loop Quality Review
+              <h3 className="font-bold text-sm text-white font-sans">
+                Human-in-the-Loop Quality Override
               </h3>
-              <div className="text-xs font-mono text-white/50">
-                Inspection ID: <span className="text-[#ED1C27] font-bold">{inspectionId}</span>
+              <div className="text-[10px] text-slate-400">
+                RECORD ID: <span className="text-white font-bold">{inspectionId}</span>
               </div>
             </div>
           </div>
           <button
             onClick={onClose}
-            className="text-white/40 hover:text-white p-1 rounded-lg hover:bg-white/10 transition-colors"
+            className="text-slate-400 hover:text-white p-1 rounded hover:bg-white/10 transition-colors cursor-pointer"
           >
-            <X className="w-5 h-5" />
+            <X className="w-4 h-4" />
           </button>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-4 text-xs">
+        <form onSubmit={handleSubmit} className="space-y-3.5">
           {error && (
-            <div className="p-3 bg-[#18090b] border border-[#ED1C27]/60 text-white rounded-xl">
+            <div className="p-2.5 bg-[#18090b] border border-[#ED1C27]/40 text-[#ff4b55] rounded text-[11px]">
               {error}
             </div>
           )}
 
           {/* Original Decision Banner */}
-          <div className="p-3.5 bg-black/80 border border-white/10 rounded-xl flex items-center justify-between font-mono">
-            <span className="text-white/50">Automated AI Decision:</span>
-            <span className="font-bold text-amber-400">{initialStatus}</span>
+          <div className="p-2.5 bg-[#07080b] border border-white/[0.06] rounded flex items-center justify-between">
+            <span className="text-slate-400 text-[11px]">AUTOMATED VERDICT:</span>
+            <span className="font-bold text-amber-400 text-[11px]">{initialStatus}</span>
           </div>
 
           {/* Operator ID */}
-          <div className="space-y-1.5">
-            <label className="text-white/70 font-semibold block font-mono">Operator Badge / ID</label>
+          <div className="space-y-1">
+            <label className="text-slate-400 font-semibold block text-[10px] uppercase">OPERATOR BADGE / ID</label>
             <input
               type="text"
               value={operatorId}
               onChange={(e) => setOperatorId(e.target.value)}
-              className="w-full bg-black border border-white/10 rounded-xl px-3.5 py-2.5 text-white font-mono focus:border-[#ED1C27] focus:ring-1 focus:ring-[#ED1C27] outline-none transition-all"
+              className="w-full bg-[#07080b] border border-white/10 rounded px-3 py-2 text-white font-mono focus:border-[#ED1C27] outline-none transition-colors text-xs"
               required
             />
           </div>
 
           {/* Disposition Decision Selection */}
-          <div className="space-y-1.5">
-            <label className="text-white/70 font-semibold block font-mono">Quality Disposition Override</label>
-            <div className="grid grid-cols-3 gap-2 font-mono">
+          <div className="space-y-1">
+            <label className="text-slate-400 font-semibold block text-[10px] uppercase">DISPOSITION OVERRIDE</label>
+            <div className="grid grid-cols-3 gap-2">
               <button
                 type="button"
                 onClick={() => setDecision("PASS")}
-                className={`py-2.5 px-3 rounded-xl font-bold border flex items-center justify-center gap-1.5 transition-all ${
+                className={`py-2 px-2.5 rounded font-bold border flex items-center justify-center gap-1.5 transition-colors cursor-pointer text-xs ${
                   decision === "PASS"
-                    ? "bg-emerald-500/20 text-emerald-300 border-emerald-500/50 shadow-[0_0_12px_rgba(16,185,129,0.2)]"
-                    : "bg-black text-white/40 border-white/10"
+                    ? "bg-emerald-500/15 text-emerald-300 border-emerald-500/40"
+                    : "bg-[#07080b] text-slate-400 border-white/10 hover:text-white"
                 }`}
               >
                 <CheckCircle2 className="w-3.5 h-3.5" />
@@ -121,10 +121,10 @@ export const OperatorReviewModal: React.FC<OperatorReviewModalProps> = ({
               <button
                 type="button"
                 onClick={() => setDecision("REWORK")}
-                className={`py-2.5 px-3 rounded-xl font-bold border flex items-center justify-center gap-1.5 transition-all ${
+                className={`py-2 px-2.5 rounded font-bold border flex items-center justify-center gap-1.5 transition-colors cursor-pointer text-xs ${
                   decision === "REWORK"
-                    ? "bg-amber-500/20 text-amber-300 border-amber-500/50 shadow-[0_0_12px_rgba(245,158,11,0.2)]"
-                    : "bg-black text-white/40 border-white/10"
+                    ? "bg-amber-500/15 text-amber-300 border-amber-500/40"
+                    : "bg-[#07080b] text-slate-400 border-white/10 hover:text-white"
                 }`}
               >
                 <AlertTriangle className="w-3.5 h-3.5" />
@@ -133,10 +133,10 @@ export const OperatorReviewModal: React.FC<OperatorReviewModalProps> = ({
               <button
                 type="button"
                 onClick={() => setDecision("FAIL")}
-                className={`py-2.5 px-3 rounded-xl font-bold border flex items-center justify-center gap-1.5 transition-all ${
+                className={`py-2 px-2.5 rounded font-bold border flex items-center justify-center gap-1.5 transition-colors cursor-pointer text-xs ${
                   decision === "FAIL"
-                    ? "bg-[#ED1C27]/20 text-white border-[#ED1C27]/50 shadow-[0_0_12px_rgba(237,28,39,0.3)]"
-                    : "bg-black text-white/40 border-white/10"
+                    ? "bg-[#ED1C27]/15 text-[#ff4b55] border-[#ED1C27]/40"
+                    : "bg-[#07080b] text-slate-400 border-white/10 hover:text-white"
                 }`}
               >
                 <XCircle className="w-3.5 h-3.5" />
@@ -146,48 +146,48 @@ export const OperatorReviewModal: React.FC<OperatorReviewModalProps> = ({
           </div>
 
           {/* Corrected Heat OCR */}
-          <div className="space-y-1.5">
-            <label className="text-white/70 font-semibold block font-mono">
-              Corrected Heat Number Marking (If OCR corrected)
+          <div className="space-y-1">
+            <label className="text-slate-400 font-semibold block text-[10px] uppercase">
+              CORRECTED HEAT NUMBER (OPTIONAL)
             </label>
             <input
               type="text"
               value={correctedHeat}
               onChange={(e) => setCorrectedHeat(e.target.value)}
-              className="w-full bg-black border border-white/10 rounded-xl px-3.5 py-2.5 text-white font-mono focus:border-[#ED1C27] focus:ring-1 focus:ring-[#ED1C27] outline-none transition-all"
+              className="w-full bg-[#07080b] border border-white/10 rounded px-3 py-2 text-white font-mono focus:border-[#ED1C27] outline-none transition-colors text-xs"
             />
           </div>
 
           {/* Audit Comment */}
-          <div className="space-y-1.5">
-            <label className="text-white/70 font-semibold block font-mono">
-              Audit Rationale & Justification <span className="text-[#ED1C27]">*</span>
+          <div className="space-y-1">
+            <label className="text-slate-400 font-semibold block text-[10px] uppercase">
+              AUDIT RATIONALE & JUSTIFICATION <span className="text-[#ED1C27]">*</span>
             </label>
             <textarea
               value={comment}
               onChange={(e) => setComment(e.target.value)}
               placeholder="e.g. Visual verification confirmed superficial mill scale rather than transverse crack. Approved for rolling."
               rows={3}
-              className="w-full bg-black border border-white/10 rounded-xl px-3.5 py-2.5 text-white font-sans focus:border-[#ED1C27] focus:ring-1 focus:ring-[#ED1C27] outline-none resize-none transition-all"
+              className="w-full bg-[#07080b] border border-white/10 rounded px-3 py-2 text-slate-200 font-sans focus:border-[#ED1C27] outline-none resize-none transition-colors text-xs"
               required
             />
           </div>
 
-          <div className="pt-3 flex items-center justify-end gap-3 border-t border-white/10">
+          <div className="pt-2.5 flex items-center justify-end gap-2 border-t border-white/[0.08]">
             <button
               type="button"
               onClick={onClose}
-              className="px-4 py-2 rounded-full bg-white/5 hover:bg-white/10 text-white/70 hover:text-white font-semibold transition-colors"
+              className="px-3.5 py-1.5 rounded bg-white/[0.04] hover:bg-white/[0.08] text-slate-300 hover:text-white border border-white/10 transition-colors cursor-pointer"
             >
               Cancel
             </button>
             <button
               type="submit"
               disabled={isSubmitting}
-              className="px-6 py-2.5 rounded-full bg-[#ED1C27] hover:bg-[#ff2a37] text-white font-bold flex items-center gap-1.5 disabled:opacity-50 shadow-[0_0_15px_rgba(237,28,39,0.4)] transition-all font-mono active:scale-95"
+              className="px-4 py-1.5 rounded bg-[#ED1C27] hover:bg-[#ff2a37] text-white font-bold flex items-center gap-1.5 disabled:opacity-50 transition-colors font-mono cursor-pointer"
             >
-              <ShieldCheck className="w-4 h-4" />
-              <span>{isSubmitting ? "Committing..." : "Commit Audit Override"}</span>
+              <ShieldCheck className="w-3.5 h-3.5" />
+              <span>{isSubmitting ? "COMMITTING..." : "COMMIT OVERRIDE"}</span>
             </button>
           </div>
         </form>
@@ -195,3 +195,4 @@ export const OperatorReviewModal: React.FC<OperatorReviewModalProps> = ({
     </div>
   );
 };
+

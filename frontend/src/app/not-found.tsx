@@ -2,71 +2,39 @@
 
 import React from "react";
 import Link from "next/link";
-import { motion } from "framer-motion";
-import { AppLayout } from "@/components/layout/AppLayout";
-import { ArrowLeft, ScanLine } from "lucide-react";
+import { ArrowLeft, AlertOctagon } from "lucide-react";
 
 export default function NotFound() {
   return (
-    <AppLayout>
-      <div className="relative min-h-[75vh] flex flex-col items-center justify-center text-center px-4 overflow-hidden">
-        {/* Ambient background glow */}
-        <div className="pointer-events-none absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[300px] bg-[#ED1C27]/15 rounded-full blur-[140px]" />
+    <div className="min-h-[60vh] flex flex-col items-center justify-center text-center px-4 py-12">
+      <div className="bg-[#0c0e14] border border-white/[0.08] rounded-lg p-8 max-w-md w-full space-y-4">
+        <div className="w-10 h-10 rounded bg-[#ED1C27]/10 border border-[#ED1C27]/30 text-[#ED1C27] flex items-center justify-center mx-auto">
+          <AlertOctagon className="w-5 h-5" />
+        </div>
 
-        {/* Large 404 with Fiery Central Graphic (Signature E-Summit Layout) */}
-        <motion.div
-          initial={{ opacity: 0, scale: 0.85 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-          className="relative mb-4 flex items-center justify-center select-none"
-        >
-          <div className="flex items-center text-[120px] sm:text-[180px] font-black leading-none tracking-tighter text-[#ED1C27] font-mono drop-shadow-[0_0_40px_rgba(237,28,39,0.5)]">
-            <span>4</span>
-            <div className="relative mx-1 sm:mx-2 w-24 sm:w-36 h-24 sm:h-36 rounded-full bg-[#ED1C27] flex items-center justify-center shadow-[0_0_30px_#ED1C27]">
-              <ScanLine className="w-14 sm:w-20 h-14 sm:h-20 text-white animate-pulse" />
-            </div>
-            <span>4</span>
+        <div className="space-y-1 font-mono">
+          <div className="text-[10px] text-slate-500 uppercase tracking-widest">
+            ERROR 404 / ENCODER INVALID
           </div>
-        </motion.div>
+          <h1 className="text-xl font-bold text-white tracking-tight">
+            Record / Viewport Not Found
+          </h1>
+        </div>
 
-        {/* Page Not Found Heading */}
-        <motion.h1
-          initial={{ opacity: 0, y: 15 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
-          className="text-3xl sm:text-5xl font-extrabold text-white tracking-tight mb-3"
-        >
-          Page Not Found
-        </motion.h1>
+        <p className="text-xs text-slate-400 font-sans leading-relaxed">
+          The requested inspection record, telemetry stream, or station route could not be resolved by the local registry index.
+        </p>
 
-        {/* Description with Red Link */}
-        <motion.p
-          initial={{ opacity: 0, y: 15 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.18, ease: [0.16, 1, 0.3, 1] }}
-          className="text-sm sm:text-base text-white/50 max-w-md mx-auto mb-8 font-normal leading-relaxed"
-        >
-          The Page you are looking for either doesn't exist or an inspection error occurred. Go back, or head over to{" "}
-          <Link href="/dashboard" className="text-[#ED1C27] font-semibold hover:underline underline-offset-4">
-            Home
-          </Link>
-        </motion.p>
-
-        {/* Action Button */}
-        <motion.div
-          initial={{ opacity: 0, y: 15 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.25, ease: [0.16, 1, 0.3, 1] }}
-        >
+        <div className="pt-2">
           <Link
             href="/dashboard"
-            className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-[#ED1C27] hover:bg-[#ff2a37] text-white font-bold text-sm transition-all shadow-[0_0_20px_rgba(237,28,39,0.4)] active:scale-95"
+            className="inline-flex items-center gap-1.5 px-4 py-2 rounded bg-[#ED1C27] hover:bg-[#ff2a37] text-white font-mono font-bold text-xs transition-colors cursor-pointer"
           >
-            <ArrowLeft className="w-4 h-4" />
-            Return to Command Center
+            <ArrowLeft className="w-3.5 h-3.5" />
+            <span>Return to Command Center</span>
           </Link>
-        </motion.div>
+        </div>
       </div>
-    </AppLayout>
+    </div>
   );
 }

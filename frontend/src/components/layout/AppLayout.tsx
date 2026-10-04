@@ -54,16 +54,26 @@ export const AppLayout: React.FC<{ children: React.ReactNode }> = ({ children })
   }, []);
 
   return (
-    <div className="min-h-screen bg-[#07080b] text-slate-200 flex flex-col font-sans antialiased selection:bg-[#ED1C27]/30 selection:text-white relative">
+    <div className="min-h-screen bg-[#07080b] text-slate-200 flex flex-col font-sans antialiased selection:bg-[#ED1C27]/30 selection:text-white relative overflow-x-hidden">
+      {/* Deep Industrial Photography Backdrop at the very back */}
+      <div
+        className="fixed inset-0 pointer-events-none z-0 bg-cover bg-center bg-no-repeat opacity-[0.12] mix-blend-luminosity filter brightness-75 contrast-125"
+        style={{
+          backgroundImage: "url('/images/industrial/hero-industrial-composite.jpg')",
+        }}
+      />
+      {/* Dark Vignette Overlay preserving contrast */}
+      <div className="fixed inset-0 pointer-events-none z-0 bg-gradient-to-b from-[#07080b]/85 via-[#07080b]/94 to-[#07080b]" />
+
       {/* Precision Floating Navbar */}
       <BilletVisionNavbar />
 
       {/* Real-time Operator Urgent Toast Banner */}
       {toastAlert && (
-        <div className="fixed bottom-6 right-6 z-50 max-w-md bg-[#130b0e] border border-[#ED1C27]/40 rounded-xl p-4 shadow-2xl backdrop-blur-md animate-in slide-in-from-bottom-3">
+        <div className="fixed bottom-6 right-6 z-50 max-w-md bg-[#130b0e] border border-[#ED1C27]/40 rounded-lg p-4 shadow-2xl backdrop-blur-md animate-in slide-in-from-bottom-3">
           <div className="flex items-start justify-between gap-3">
             <div className="flex items-start gap-3">
-              <div className="p-2 rounded-lg bg-[#ED1C27]/20 text-[#ED1C27] border border-[#ED1C27]/30 shrink-0">
+              <div className="p-2 rounded bg-[#ED1C27]/20 text-[#ED1C27] border border-[#ED1C27]/30 shrink-0">
                 <ShieldAlert className="w-5 h-5 animate-pulse" />
               </div>
               <div>
@@ -111,12 +121,12 @@ export const AppLayout: React.FC<{ children: React.ReactNode }> = ({ children })
               <span>NIT RAIPUR LINE 01</span>
             </div>
             <span className="text-slate-600">|</span>
-            <span className="text-slate-500">ISO 9001 / ASTM E384 COMPLIANT</span>
+            <span className="text-slate-400">HARDWARE-READY PROTOTYPE · PLANT VALIDATION REQUIRED</span>
           </div>
           <div className="flex items-center gap-5 text-slate-400">
-            <span>5/5 GIGE CAMERAS</span>
-            <span>OPC-UA: 12ms</span>
-            <span className="text-slate-500">BILLETVISION v2.4.0</span>
+            <span>OPTICAL CAMERAS + SIMULATED NDT</span>
+            <span>OPC-UA READY</span>
+            <span className="text-slate-400 font-bold">BILLETVISION v3.0</span>
           </div>
         </div>
       </footer>

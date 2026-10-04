@@ -17,55 +17,55 @@ export const OperationalTelemetryStrip: React.FC<StripProps> = ({ stats }) => {
 
   const metrics = [
     {
-      label: "BILLETS INSPECTED",
+      label: "TOTAL INSPECTED",
       value: total.toLocaleString(),
-      subtext: "Shift Total",
+      subtext: "Shift Cumulative",
       valueColor: "text-slate-100",
     },
     {
       label: "FIRST-PASS YIELD",
       value: `${passRate.toFixed(1)}%`,
-      subtext: `${stats?.pass_count || 0} conforming`,
+      subtext: `${stats?.pass_count || 0} nominal billets`,
       valueColor: "text-emerald-400",
     },
     {
-      label: "ACTIVE DEFECTS",
+      label: "DEFECTS (FAIL/REWORK)",
       value: `${reworkCount + failCount}`,
-      subtext: `${reworkCount} rework, ${failCount} fail`,
-      valueColor: failCount > 0 ? "text-[#ED1C27]" : "text-amber-400",
+      subtext: `${reworkCount} rework · ${failCount} reject`,
+      valueColor: failCount > 0 ? "text-[#ff4b55]" : reworkCount > 0 ? "text-amber-400" : "text-slate-300",
     },
     {
-      label: "REVIEW QUEUE",
+      label: "HUMAN REVIEW QUEUE",
       value: `${reviewCount}`,
-      subtext: "Operator Action",
+      subtext: reviewCount > 0 ? "Pending action" : "Queue clear",
       valueColor: reviewCount > 0 ? "text-amber-400" : "text-slate-400",
     },
     {
-      label: "AVG CYCLE TIME",
+      label: "CYCLE TIME (MS)",
       value: `${avgLatency} ms`,
-      subtext: "Target < 350ms",
+      subtext: "Gate limit: < 350ms",
       valueColor: "text-slate-200",
     },
     {
-      label: "CAMERAS ONLINE",
+      label: "ARRAY STATUS",
       value: "05 / 05",
-      subtext: "4K GigE Active",
+      subtext: "4K GigE Optical Rig",
       valueColor: "text-slate-200",
     },
   ];
 
   return (
-    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 mb-6">
+    <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2.5 mb-5">
       {metrics.map((m, idx) => (
         <div
           key={idx}
-          className="bg-[#0d0f14] border border-white/[0.07] rounded-lg p-3.5 flex flex-col justify-between"
+          className="bg-[#0c0e14] border border-white/[0.07] rounded-lg p-3 flex flex-col justify-between"
         >
-          <span className="text-[10px] font-mono text-slate-400 tracking-wider uppercase">
+          <span className="text-[9px] font-mono text-slate-400 tracking-wider uppercase truncate">
             {m.label}
           </span>
-          <div className="my-1">
-            <span className={`text-xl font-bold font-mono tracking-tight ${m.valueColor}`}>
+          <div className="my-0.5">
+            <span className={`text-lg font-bold font-mono tracking-tight ${m.valueColor}`}>
               {m.value}
             </span>
           </div>
@@ -77,3 +77,4 @@ export const OperationalTelemetryStrip: React.FC<StripProps> = ({ stats }) => {
     </div>
   );
 };
+

@@ -51,6 +51,8 @@ Thumbs.db
 # Local database runtime file (keep structure)
 storage/*.db
 storage/*.db-journal
+storage/*.db-shm
+storage/*.db-wal
 storage/inspection-images/*.jpg
 storage/defect-crops/*.jpg
 storage/masks/*.png
@@ -58,6 +60,7 @@ storage/raw-frames/*.jpg
 storage/reports/*.pdf
 storage/exports/*.xlsx
 storage/exports/*.csv
+*.pdf
 !storage/.gitkeep
 !storage/inspection-images/.gitkeep
 !storage/defect-crops/.gitkeep

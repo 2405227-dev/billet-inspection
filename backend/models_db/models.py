@@ -86,7 +86,7 @@ class ModelVersion(Base):
 
 class Billet(Base):
     __tablename__ = "billets"
-    id = Column(String(64), primary_key=True) # e.g. HEAT-26A-1042 or BILLET-9081
+    id = Column(String(64), primary_key=True) # e.g. BILLET-06128
     heat_number = Column(String(64), index=True)
     batch_id = Column(String(64), index=True)
     steel_grade = Column(String(64), default="IS 2830 / Fe 500D")
@@ -112,6 +112,19 @@ class Inspection(Base):
     batch_id = Column(String(64), index=True, nullable=False)
     camera_ids = Column(JSON, default=[]) # CAM-01, CAM-02, CAM-03, CAM-04, CAM-05
     
+    # Encoder Synchronized Traversal
+    encoder_entry_position_mm = Column(Float, default=0.0)
+    encoder_exit_position_mm = Column(Float, default=6000.0)
+    conveyor_speed_mm_s = Column(Float, default=1000.0)
+    
+    # Multi-Face Physical Surface Coverage Map
+    coverage_top = Column(String(32), default="INSPECTED")
+    coverage_bottom = Column(String(32), default="NOT_INSPECTED") # Physical conveyor contact surface
+    coverage_left = Column(String(32), default="INSPECTED")
+    coverage_right = Column(String(32), default="INSPECTED")
+    coverage_front = Column(String(32), default="INSPECTED")
+    coverage_back = Column(String(32), default="INSPECTED")
+    
     # Dimensional Metrology
     length_mm = Column(Float, nullable=False)
     width_mm = Column(Float, nullable=False)
@@ -131,9 +144,10 @@ class Inspection(Base):
     has_critical_defect = Column(Boolean, default=False)
     has_major_defect = Column(Boolean, default=False)
     
-    # Quality Decision
+    # Quality Decision & Transparent Root-Cause Explanation
     status = Column(String(32), nullable=False, index=True) # PASS, FAIL, REWORK, NEEDS_REVIEW
     decision_reason = Column(Text, nullable=False)
+    why_failed_explanation = Column(Text, nullable=True)
     rules_triggered = Column(JSON, default=[])
     
     # System & Execution Metrics
@@ -155,7 +169,7 @@ class Inspection(Base):
     segmentation_mask_reference = Column(String(256), nullable=True)
     ocr_crop_reference = Column(String(256), nullable=True)
     
-    # Sensor Fusion / NDT
+    # Sensor Fusion / NDT Snapshot
     ndt_results = Column(JSON, default={})
     
     # Cryptographic Audit Trail
@@ -174,6 +188,10 @@ class Inspection(Base):
     defects = relationship("Defect", back_populates="inspection", cascade="all, delete-orphan")
     dimensions = relationship("Dimension", back_populates="inspection", cascade="all, delete-orphan")
     ocr_results = relationship("OCRResult", back_populates="inspection", cascade="all, delete-orphan")
+    eca_indications = relationship("ECAIndication", back_populates="inspection", cascade="all, delete-orphan")
+    paut_indications = relationship("PAUTIndication", back_populates="inspection", cascade="all, delete-orphan")
+    sensor_events = relationship("SensorEvent", back_populates="inspection", cascade="all, delete-orphan")
+    inspection_stages = relationship("InspectionStage", back_populates="inspection", cascade="all, delete-orphan")
     alerts = relationship("Alert", back_populates="inspection")
     audit_events = relationship("AuditEvent", back_populates="inspection")
 
@@ -185,11 +203,12 @@ class Defect(Base):
     severity = Column(String(32), nullable=False) # CRITICAL, MAJOR, MODERATE, MINOR, UNKNOWN
     confidence = Column(Float, nullable=False)
     camera_id = Column(String(64), default="CAM-01")
-    surface_face = Column(String(32), default="TOP") # TOP, BOTTOM, LEFT, RIGHT, END_FACE
+    surface_face = Column(String(32), default="TOP") # TOP, BOTTOM (NOT_INSPECTED), LEFT, RIGHT, FRONT, BACK
     
-    # Defect Metrology
+    # Defect Metrology & Spatial Location
     x_pos_px = Column(Integer, default=0)
     y_pos_px = Column(Integer, default=0)
+    encoder_pos_mm = Column(Float, default=0.0) # Physical distance along billet length
     bbox_xywh = Column(JSON, default=[])
     length_mm = Column(Float, default=0.0)
     width_mm = Column(Float, default=0.0)
@@ -227,9 +246,68 @@ class OCRResult(Base):
     confidence = Column(Float, nullable=False)
     bbox = Column(JSON, default=[])
     camera_id = Column(String(64), default="CAM-05")
-    engine_name = Column(String(64), default="PaddleOCR")
+    engine_name = Column(String(64), default="PaddleOCR / Tesseract Fallback")
     
     inspection = relationship("Inspection", back_populates="ocr_results")
+
+class ECAIndication(Base):
+    __tablename__ = "eca_indications"
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    inspection_id = Column(String(64), ForeignKey("inspections.id"), nullable=False, index=True)
+    billet_id = Column(String(64), index=True)
+    channel_idx = Column(Integer, nullable=False)
+    signal_amplitude_mv = Column(Float, nullable=False)
+    phase_deg = Column(Float, default=0.0)
+    encoder_position_mm = Column(Float, nullable=False)
+    indication_type = Column(String(64), default="SURFACE_CRACK_IMPEDANCE")
+    severity = Column(String(32), default="MAJOR")
+    confidence = Column(Float, default=0.92)
+    is_simulated = Column(Boolean, default=True)
+    timestamp = Column(DateTime, default=datetime.utcnow)
+    
+    inspection = relationship("Inspection", back_populates="eca_indications")
+
+class PAUTIndication(Base):
+    __tablename__ = "paut_indications"
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    inspection_id = Column(String(64), ForeignKey("inspections.id"), nullable=False, index=True)
+    billet_id = Column(String(64), index=True)
+    channel_idx = Column(Integer, default=0)
+    depth_mm = Column(Float, nullable=False)
+    amplitude_pct = Column(Float, nullable=False)
+    encoder_position_mm = Column(Float, nullable=False)
+    indication_type = Column(String(64), default="INTERNAL_CORE_POROSITY")
+    severity = Column(String(32), default="CRITICAL")
+    confidence = Column(Float, default=0.94)
+    is_simulated = Column(Boolean, default=True)
+    timestamp = Column(DateTime, default=datetime.utcnow)
+    
+    inspection = relationship("Inspection", back_populates="paut_indications")
+
+class SensorEvent(Base):
+    __tablename__ = "sensor_events"
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    inspection_id = Column(String(64), ForeignKey("inspections.id"), nullable=False, index=True)
+    billet_id = Column(String(64), index=True)
+    sensor_source = Column(String(32), nullable=False) # CAMERA, LASER_3D, OCR, ECA, PAUT, ENCODER, PLC
+    encoder_position_mm = Column(Float, nullable=False)
+    event_type = Column(String(64), nullable=False)
+    data = Column(JSON, default={})
+    timestamp = Column(DateTime, default=datetime.utcnow)
+    
+    inspection = relationship("Inspection", back_populates="sensor_events")
+
+class InspectionStage(Base):
+    __tablename__ = "inspection_stages"
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    inspection_id = Column(String(64), ForeignKey("inspections.id"), nullable=False, index=True)
+    stage_name = Column(String(32), nullable=False) # ACQUIRE, DETECT, TRACK, POSITION, METROLOGY, OCR, SURFACE, ECA, PAUT, FUSION, DECISION, LOG
+    status = Column(String(32), default="DONE") # DONE, SIMULATED, SKIPPED, ERROR
+    latency_ms = Column(Float, default=0.0)
+    error_message = Column(Text, nullable=True)
+    timestamp = Column(DateTime, default=datetime.utcnow)
+    
+    inspection = relationship("Inspection", back_populates="inspection_stages")
 
 class Alert(Base):
     __tablename__ = "alerts"

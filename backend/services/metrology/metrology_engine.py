@@ -135,7 +135,7 @@ class DimensionalMetrologyEngine:
                 "expected_min_mm": 208.0,
                 "expected_max_mm": 216.0,
                 "deviation_pct": round(max(abs(wid_dev_pct), abs(hgt_dev_pct)), 2),
-                "status": "PASS",
+                "status": "PASS" if 208.0 <= np.sqrt(meas_width_mm**2 + meas_height_mm**2) <= 216.0 else "FAIL",
                 "camera_id": camera_id,
             },
         ]

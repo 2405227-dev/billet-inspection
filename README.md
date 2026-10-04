@@ -1,129 +1,149 @@
-# AI-Powered Industrial Billet Inspection, Traceability & Audit Platform
+# BILLET VISION
+## Automated, Non-Contact Inline Multimodal Steel Billet Inspection & Traceability System
 
 > **NIT Raipur Integrated Steel Plant — Rolling & Cooling Bed Line #1**  
-> *Production-Grade Vision, Calibrated Optical Metrology, Fine Crack Segmentation, OCR Traceability & SHA-256 Audit Trail*
+> *Hardware-Ready Machine Vision HMI, Sub-Millimeter Metrology, 3D Laser Profiling, Multi-Scale Crack Segmentation, Stencil OCR Traceability, Multi-Channel ECA & PAUT NDT Fusion, and SHA-256 Cryptographic Audit Ledger*
 
 ---
 
 ## 📌 Executive Summary
 
-This platform is a complete, production-oriented industrial software system built to automate non-contact quality inspection of hot and cold steel billets moving across continuous casting and rolling conveyor lines.
+**BilletVision** is a comprehensive, industrial-grade machine-vision inspection platform and Human-Machine Interface (HMI) built to automate non-contact quality evaluation and end-to-end traceability of steel billets moving continuously on a conveyor line.
 
-The platform inspects **EVERY SINGLE BILLET**, measures dimensions with calibrated optical metrology ($\le \pm 1.0\%$ error), segments fine surface micro-cracks and defect topologies via high-resolution tiling, extracts heat and batch codes with OCR, merges multi-modal NDT sensor streams, executes deterministic quality decision logic (`PASS`, `FAIL`, `REWORK`, `NEEDS_REVIEW`), alerts operators in real time, and logs immutable cryptographically chained SHA-256 records for audits.
+The system communicates one central metallurgical principle:
+> *"We don't just detect a defect. We know **WHICH** billet has the defect, **WHERE** the defect is, **WHICH** sensor detected it, **WHEN** it was detected, **WHAT** the dimensions were, **WHAT** the identification was, **WHAT** other sensors found, **WHY** the final decision was made, and we preserve the complete immutable inspection history."*
 
 ---
 
-## 🏗️ Core Architecture & Technology Stack
+## 🏛️ System Architecture
 
 ```
-                                [ INDUSTRIAL CONVEYOR LINE ]
-                                              │
-                      ┌───────────────────────┴───────────────────────┐
-                      ▼                                               ▼
-               Optical Rig (CAM-01..05)                       NDT Probes (ECA / PAUT)
-                      │                                               │
-                      ▼                                               ▼
-         [ CameraProvider (GenICam / GigE) ]             [ NDTSensorFusionEngine ]
-                      │                                               │
-                      ▼                                               │
-             [ BilletTracker ] ── (1 Physical Billet = 1 Record)     │
-                      │                                               │
-      ┌───────────────┼───────────────────────────────┐               │
-      ▼               ▼                               ▼               │
-[ MetrologyEngine ] [ SurfaceDefectEngine ]     [ BilletOCREngine ]   │
-(Homography/Calib)   (High-Res Tiling/CLAHE)    (PaddleOCR/Stencil)   │
-      │               │                               │               │
-      └───────────────┬───────────────────────────────┘               │
-                      ▼                                               │
-            [ QualityDecisionEngine ] ◄───────────────────────────────┘
-            (PASS / FAIL / REWORK / NEEDS_REVIEW)
-                      │
-     ┌────────────────┼────────────────────────────────┬─────────────────┐
-     ▼                ▼                                ▼                 ▼
-[ PLC Adapter ]  [ Operator Alerts ]            [ Evidence Store ]  [ SQLite / Postgres ]
-(OPC-UA/Modbus)   (WebSockets Feed)               (4K Frames/Crops)       │
-                                                                         ▼
-                                                                [ SHA-256 Hash Chain ]
-                                                                (Permanent Audit Log)
-                                                                         │
-                                                ┌────────────────────────┴────────────────────────┐
-                                                ▼                                                 ▼
-                                     [ OpenPyXL 3-Sheet Excel ]                         [ ReportLab PDF Certs ]
+                                  [ INDUSTRIAL CONVEYOR LINE ]
+                                                │
+                 ┌──────────────────────────────┼──────────────────────────────┐
+                 ▼                              ▼                              ▼
+      [ Optical Rig (CAM-01..05) ]   [ 3D Laser Triangulation ]    [ Rotary Pulse Encoder ]
+                 │                              │                              │
+                 └──────────────────────────────┼──────────────────────────────┘
+                                                ▼
+                          [ Billet Detection & Continuous Tracking ]
+                               (Kalman Filter / SORT Tracker)
+                                                │
+                       ┌────────────────────────┼────────────────────────┐
+                       ▼                        ▼                        ▼
+             [ Optical Metrology ]    [ Surface Defect Seg ]    [ End-Face OCR ]
+             (Sub-pixel px->mm)       (Tiled Multi-Scale)       (Heat/Batch RegEx)
+                       │                        │                        │
+                       └────────────────────────┼────────────────────────┘
+                                                │
+                 ┌──────────────────────────────┴──────────────────────────────┐
+                 ▼                                                             ▼
+    [ Eddy Current Array (ECA) ]                                 [ Phased Array UT (PAUT) ]
+    (16-Channel Surface Cracks)                                  (Volumetric Core Porosity)
+    [ MODE: SIMULATION / DEMO ]                                  [ MODE: SIMULATION / DEMO ]
+                 │                                                             │
+                 └──────────────────────────────┬──────────────────────────────┘
+                                                ▼
+                               [ Multi-Modal Sensor Fusion Engine ]
+                                                │
+                                  [ Quality Decision Engine ]
+                             (PASS / FAIL / REWORK / NEEDS_REVIEW)
+                                                │
+        ┌────────────────────────┬──────────────┴──────────────┬────────────────────────┐
+        ▼                        ▼                             ▼                        ▼
+[ PLC Actuator ]       [ Operator Alerts ]          [ Digital Billet Twin ]   [ Relational DB ]
+(Modbus / OPC-UA)      (Real-Time WebSockets)       (3D/2D Spatial Twin)      (SQLite / Postgres)
+                                                                                        │
+                                                                                        ▼
+                                                                             [ SHA-256 Audit Chain ]
+                                                                             (Cryptographic Ledger)
+                                                                                        │
+                                                               ┌────────────────────────┴────────────────────────┐
+                                                               ▼                                                 ▼
+                                                    [ Multi-Sheet Excel ]                             [ Traceable PDF Passports ]
 ```
 
-### Technology Highlights
+---
 
-- **Frontend**: Next.js (App Router), React, TypeScript, Tailwind CSS, Recharts, Lucide Icons, WebSockets real-time feeds, Dark Industrial Command-Center Theme.
-- **Backend**: Python 3.11, FastAPI, WebSockets, OpenCV, NumPy, Pandas, SQLAlchemy (SQLite & PostgreSQL support), OpenPyXL, ReportLab.
-- **Computer Vision & ML**: Multi-scale CLAHE, High-resolution overlapping tiling (256px / 64px overlap), Morphological skeleton fissure extraction, PaddleOCR / Heuristic Stencil extraction, ONNX Runtime inference adapter.
-- **Audit & Security**: Append-only SHA-256 cryptographic hash chaining ($H_n = \text{SHA256}(H_{n-1} + \text{Payload}_n)$), verification engine, anti-tampering detection.
-- **Reporting**: Multi-sheet formatted Excel workbooks (`billet_inspection_audit.xlsx`), granular CSVs, single billet QA certificates (PDF), batch audit summaries (PDF).
+## ⚖️ Engineering Honesty & Hardware Abstraction Notice
+
+In strict adherence to real-world industrial engineering standards:
+1. **NDT Simulation Disclosure**: Physical Eddy Current Array (ECA) and Phased Array Ultrasonic Testing (PAUT) hardware is currently not connected. All NDT volumetric profiles, acoustic echo waveforms (A-scan), and 16-channel impedance streams are generated by calibrated mathematical simulators (`DemoECA` and `DemoPAUT`) and are clearly labeled **`SIMULATION / DEMO MODE`**.
+2. **Modular Driver Bridges**: All hardware adapters extend abstract interfaces (`CameraInterface`, `EncoderInterface`, `Laser3DInterface`, `ECAInterface`, `PAUTInterface`, `PLCInterface`) so physical fieldbuses (Basler Pylon, Olympus OmniScan, Beckhoff EtherCAT, Siemens S7 OPC-UA) can be connected without rewriting core pipeline code.
+3. **No Unsubstantiated Claims**: The system does not claim 100% defect detection, ISO certifications, or unverified accuracy figures.
+4. **Bottom Surface Transparency**: The conveyor contact bottom surface is explicitly recorded as **`NOT_INSPECTED`** rather than falsely marked conforming.
+
+---
+
+## 🖥️ User Interface & Navigation Map
+
+The frontend is built as a dark graphite, high-density industrial machine-vision HMI with monospace telemetry:
+
+| Route | View Description |
+| :--- | :--- |
+| **`/dashboard`** | Command Center: Real-time line status, active conveyor telemetry, current billet, quality distribution, human review queue. |
+| **`/inspection`** | Live Inspection Viewport: Live camera feed, active tracker bounding boxes, dimension table, OCR card, stage state machine, ECA/PAUT telemetry strip. |
+| **`/inspections`** | Historical Registry: Searchable and filterable database of all inspected billets with multi-column status, heat/batch search, and export triggers. |
+| **`/inspections/:id`** | Inspection Record Drill-Down: Detailed view of a single inspection entity with high-res defect crops and operator override flow. |
+| **`/defects`** | Defect Catalog: Defect classification breakdown, severity distributions, and zoomable optical crop reticle. |
+| **`/ndt`** | Dedicated NDT Station: 16-channel ECA C-scan matrix (length vs channel) and PAUT volumetric A-scan waveform + B-scan depth cross-section (0–150 mm). |
+| **`/digital-twin/:id`** | Digital Billet Twin: Interactive 3D/2D spatial model with defect hotspots, 6-facet physical coverage map, root-cause breakdown ("Why did this billet fail?"), and synchronous sensor timeline. |
+| **`/reports`** | Reporting & Export Center: Multi-sheet Excel workbook (`.xlsx`), CSV (`.csv`), and individual/batch PDF Quality Passports. |
+| **`/audit`** | Cryptographic Audit Ledger: Immutable SHA-256 event history with interactive one-click chain verification and tamper detection. |
+| **`/system`** | System Health & HAL: Live HAL adapter status monitor, PLC discrete I/O registers, latency benchmarks, and failure mode simulation switches. |
+| **`/settings`** | Configuration: Millimeter tolerance envelopes, acceptance thresholds, and conveyor speed controls. |
 
 ---
 
 ## 🚀 Quick Start Guide
 
 ### Prerequisites
+- Python 3.11+
 - Node.js 18+ (Node 20+ recommended)
-- Python 3.11+ (or `uv`)
 
-### 1. Backend Setup & Run
-
+### 1. Backend Setup & Startup
 ```bash
-# 1. Activate Python virtual environment (already set up in .venv)
+# Activate Python virtual environment
 .venv\Scripts\activate   # Windows
 # source .venv/bin/activate  # Linux/macOS
 
-# 2. Install dependencies (if not already installed)
+# Install dependencies (if not already installed)
 pip install -r requirements.txt
 
-# 3. Run Backend Server
+# Run FastAPI backend daemon
 python -m uvicorn backend.main:app --host 0.0.0.0 --port 8000 --reload
 ```
-*Backend API and Swagger UI will be available at:* **http://127.0.0.1:8000/docs**
+*API documentation available at:* **http://127.0.0.1:8000/docs**
 
-### 2. Frontend Setup & Run
-
+### 2. Frontend Setup & Startup
 ```bash
 cd frontend
 npm install
 npm run dev
 ```
-*Industrial QA Command Center will be available at:* **http://localhost:3000**
+*Industrial HMI dashboard available at:* **http://localhost:3000**
 
 ---
 
-## 🧪 Running Automated Test Suite
+## 🧪 Automated Testing Suite
 
+Run the comprehensive unit, integration, and robustness test suite:
 ```bash
-.venv\Scripts\python.exe -m pytest tests/test_inspection_pipeline.py -v
+.venv\Scripts\python.exe -m pytest tests/ -v
 ```
-Verifies:
+
+### Verified Test Cases:
 - [x] Optical Camera Frame Synthesis & Acquisition
-- [x] Calibrated Dimensional Metrology
-- [x] High-Resolution Crack Segmentation
-- [x] Stencil OCR Extraction
-- [x] Quality Decision Engine
-- [x] Conveyor Duplicate Billet Prevention
-- [x] SHA-256 Hash Chaining & Tamper Detection
-- [x] Excel (3 sheets), CSV & PDF Exports
-
----
-
-## 📋 Acceptance Criteria Verification Matrix
-
-| Criterion | Implementation Status | Ground Truth / File Reference |
-|---|---|---|
-| **Real Working Backend** | **IMPLEMENTED** | [`backend/main.py`](file:///c:/Users/acer/Desktop/nit%20raipur/backend/main.py), [`backend/api/router.py`](file:///c:/Users/acer/Desktop/nit%20raipur/backend/api/router.py) |
-| **Relational Database** | **IMPLEMENTED** | [`backend/models_db/models.py`](file:///c:/Users/acer/Desktop/nit%20raipur/backend/models_db/models.py) (16 tables) |
-| **Multi-Camera Rig** | **IMPLEMENTED** | [`backend/services/camera/provider.py`](file:///c:/Users/acer/Desktop/nit%20raipur/backend/services/camera/provider.py) (CAM-01..05) |
-| **Dimensional Metrology** | **IMPLEMENTED** | [`backend/services/metrology/metrology_engine.py`](file:///c:/Users/acer/Desktop/nit%20raipur/backend/services/metrology/metrology_engine.py) (±0.12mm uncertainty) |
-| **Fine Crack Segmentation** | **IMPLEMENTED** | [`backend/services/defect/defect_engine.py`](file:///c:/Users/acer/Desktop/nit%20raipur/backend/services/defect/defect_engine.py) (Tiled CLAHE) |
-| **OCR Marking Engine** | **IMPLEMENTED** | [`backend/services/ocr/ocr_engine.py`](file:///c:/Users/acer/Desktop/nit%20raipur/backend/services/ocr/ocr_engine.py) (Heat/Batch regex) |
-| **Duplicate Prevention** | **IMPLEMENTED** | [`backend/services/tracking/tracker.py`](file:///c:/Users/acer/Desktop/nit%20raipur/backend/services/tracking/tracker.py) (Conveyor session) |
-| **SHA-256 Audit Chaining** | **IMPLEMENTED** | [`backend/core/security.py`](file:///c:/Users/acer/Desktop/nit%20raipur/backend/core/security.py) (Cryptographic chain) |
-| **3-Sheet Excel Export** | **IMPLEMENTED** | [`backend/services/exports/excel_exporter.py`](file:///c:/Users/acer/Desktop/nit%20raipur/backend/services/exports/excel_exporter.py) (OpenPyXL) |
-| **Individual PDF Report** | **IMPLEMENTED** | [`backend/services/exports/pdf_exporter.py`](file:///c:/Users/acer/Desktop/nit%20raipur/backend/services/exports/pdf_exporter.py) (ReportLab) |
-| **Batch Audit PDF** | **IMPLEMENTED** | [`backend/services/exports/pdf_exporter.py`](file:///c:/Users/acer/Desktop/nit%20raipur/backend/services/exports/pdf_exporter.py) (ReportLab) |
-| **Operator Review Flow** | **IMPLEMENTED** | [`frontend/src/components/inspection/OperatorReviewModal.tsx`](file:///c:/Users/acer/Desktop/nit%20raipur/frontend/src/components/inspection/OperatorReviewModal.tsx) |
-| **Demo Simulator** | **IMPLEMENTED (DEMO)** | [`backend/services/simulator/production_simulator.py`](file:///c:/Users/acer/Desktop/nit%20raipur/backend/services/simulator/production_simulator.py) |
+- [x] Calibrated Dimensional Metrology & Dynamic Tolerances
+- [x] High-Resolution Fine-Crack Semantic Segmentation
+- [x] End-Face Stencil OCR Extraction
+- [x] Quality Decision Engine Rule Evaluation
+- [x] Multi-Billet Sequential Tracking & Duplicate Prevention
+- [x] Rotary Pulse Encoder Position Synchronization
+- [x] Low OCR Confidence Fallback (`NEEDS_REVIEW`)
+- [x] 16-Channel ECA Impedance Flaw Detection
+- [x] PAUT Volumetric A-Scan & B-Scan Core Discontinuity Scan
+- [x] Hardware Abstraction Layer Disconnected Disclaimers
+- [x] Bottom Surface Non-Inspection Integrity
+- [x] SHA-256 Cryptographic Hash Chaining & Anti-Tamper Verification
+- [x] Multi-Sheet Excel Workbook, CSV, and PDF Quality Passport Generation
